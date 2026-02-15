@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>National leagues</title>
+
+<style>
+  *{box-sizing:border-box}
+
+  html,body{
+    margin:0;
+    padding:0;
+    height:100%;
+    font-family:"Segoe UI", Arial, sans-serif;
+    color:#fff;
+    overflow:hidden; /* desktop: no scroll */
+  }
+
+  /* SAME BACKGROUND as history / continental */
+  body{
+    background:
+      linear-gradient(rgba(6,10,18,.40), rgba(6,10,18,.22)),
+      url("assets/images/history-bg.png") center/cover no-repeat fixed;
+  }
+
+  /* Dim overlay: starts OFF (100% bg), then fades ON */
+  .dim{
+    position:fixed; inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.70));
+    opacity:0;
+    transition:opacity 900ms ease;
+    pointer-events:none;
+    z-index:0;
+  }
+  .dim.on{opacity:1;}
+
+  /* Back button */
+  .backBtn{
+    position:fixed;
+    right:18px;
+    top:18px;
+    z-index:50;
+    padding:10px 16px;
+    border-radius:999px;
+    border:none;
+    cursor:pointer;
+    background:linear-gradient(135deg,#ffd200,#ff7a18);
+    color:#102a56;
+    font-weight:900;
+  }
+
+  /* Page container */
+  .page{
+    position:relative;
+    z-index:1;
+    max-width:1200px;
+    margin:0 auto;
+    padding:22px 16px 24px;
+  }
+
+  /* SAME HEADLINE STYLE */
+  .hero{margin:0 0 14px;}
+  .hero h1{
+    margin:0 0 8px;
+    font-size:clamp(34px,4.2vw,64px);
+    letter-spacing:1px;
+    background:linear-gradient(90deg,#ff4bd6,#ffd200,#6ee7ff);
+    -webkit-background-clip:text;
+    color:transparent;
+
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity 800ms ease, transform 800ms ease;
+  }
+  .hero p{
+    margin:0;
+    max-width:980px;
+    font-size:15px;
+    font-weight:750;
+    line-height:1.45;
+
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity 800ms ease, transform 800ms ease;
+  }
+  .hero.show h1,.hero.show p{opacity:1;transform:translateY(0);}
+
+  /* Layout: left leagues / right superstar stage */
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr 420px;
+    gap:18px;
+    align-items:start;
+  }
+
+  /* League card (clickable) */
+  .league{
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(10,14,20,.28);
+    border-radius:16px;
+    overflow:hidden;
+    margin:10px 0;
+    cursor:pointer;
+
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity 650ms ease, transform 650ms ease, box-shadow 250ms ease;
+  }
+  .league.show{opacity:1;transform:translateY(0);}
+  .league:hover{box-shadow:0 10px 26px rgba(0,0,0,.25);}
+
+  /* small compact head */
+  .leagueHead{
+    padding:10px 12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:rgba(0,0,0,.16);
+    border-bottom:1px solid rgba(255,255,255,.10);
+  }
+  .badge{
+    font-weight:900;
+    font-size:11px;
+    padding:6px 10px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(0,0,0,.12);
+    white-space:nowrap;
+  }
+  .leagueTitle{
+    font-weight:950;
+    font-size:15px;
+    flex:1;
+  }
+  .leagueSub{
+    padding:10px 12px 12px;
+    font-weight:750;
+    font-size:13px;
+    opacity:.95;
+    line-height:1.35;
+  }
+
+  /* Blink when star appears */
+  /* STRONG NEON BLINK + DOUBLE SIZE */
+.blink{
+  animation: neonPop 900ms ease-in-out 1;
+  position:relative;
+  z-index:5;
+}
+
+@keyframes neonPop{
+  0%{
+    transform:scale(1);
+    filter:brightness(1);
+    box-shadow:none;
+  }
+  25%{
+    transform:scale(1.12);
+    filter:brightness(1.25);
+    box-shadow:
+      0 0 8px rgba(255,0,220,.55),
+      0 0 18px rgba(255,210,0,.55),
+      0 0 26px rgba(110,231,255,.55);
+  }
+  55%{
+    transform:scale(1.22);
+    filter:brightness(1.35);
+    box-shadow:
+      0 0 14px rgba(255,0,220,.75),
+      0 0 28px rgba(255,210,0,.70),
+      0 0 44px rgba(110,231,255,.70);
+  }
+  100%{
+    transform:scale(1);
+    filter:brightness(1);
+    box-shadow:none;
+  }
+}
+
+  /* Right: Superstar Stage (same size always) */
+  .stage{
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(10,14,20,.22);
+    border-radius:18px;
+    overflow:hidden;
+
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity 650ms ease, transform 650ms ease;
+  }
+  .stage.show{opacity:1;transform:translateY(0);}
+
+  .stageTop{
+    height:360px;              /* big image area */
+    background:rgba(0,0,0,.10);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px;
+  }
+  .stageTop img{
+    width:100%;
+    height:100%;
+    object-fit:contain;        /* big, clean, no cropping */
+    display:block;
+  }
+
+  .stageInfo{
+    padding:12px 14px 14px;
+    border-top:1px solid rgba(255,255,255,.10);
+    background:rgba(0,0,0,.12);
+  }
+  .starName{
+    font-weight:950;
+    font-size:18px;
+    margin:0 0 6px;
+    letter-spacing:.2px;
+  }
+  .metaGrid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:6px 12px;
+    font-size:13px;
+    font-weight:750;
+    opacity:.95;
+  }
+  .metaGrid div span{
+    opacity:.78;
+    font-weight:800;
+    margin-right:6px;
+  }
+
+  /* Star card fade (one after another) */
+  .stage.fadeOut{
+    opacity:.35;
+    transform:translateY(14px);
+  }
+
+  /* Responsive */
+  @media (max-width: 980px){
+    html,body{overflow:auto;}
+    .grid{grid-template-columns:1fr;}
+    .stageTop{height:260px;}
+  }
+</style>
+</head>
+
+<body>
+  <div class="dim" id="dim"></div>
+
+  <button class="backBtn" onclick="location.href='volleyball_business.html'">⟵ Back</button>
+
+  <div class="page">
+    <div class="hero" id="hero">
+      <h1>National leagues</h1>
+      <p>Weekly exposure, big audiences, sponsor power. The best “shop window” for superstars.</p>
+    </div>
+
+    <div class="grid">
+
+      <!-- LEFT: LEAGUES (clickable, ready for subpages later) -->
+      <div class="leagues">
+
+        <section class="league" id="league-italy" onclick="location.href='league_italy.html'">
+          <div class="leagueHead">
+            <span class="badge">⭐ star income</span>
+            <div class="leagueTitle">Italy — SuperLega (Men) / Serie A1 (Women)</div>
+          </div>
+          <div class="leagueSub">
+            Highest prestige + top visibility. Big clubs, big finals, big pressure.
+          </div>
+        </section>
+
+        <section class="league" id="league-poland" onclick="location.href='league_poland.html'">
+          <div class="leagueHead">
+            <span class="badge">⭐ star income</span>
+            <div class="leagueTitle">Poland — PlusLiga (Men) / Tauron Liga (Women)</div>
+          </div>
+          <div class="leagueSub">
+            Huge crowd + crazy atmosphere. Strong domestic system and sponsors.
+          </div>
+        </section>
+
+        <section class="league" id="league-turkey" onclick="location.href='league_turkey.html'">
+          <div class="leagueHead">
+            <span class="badge">⭐ star income</span>
+            <div class="leagueTitle">Turkey — Efeler Ligi (Men) / Sultanlar Ligi (Women)</div>
+          </div>
+          <div class="leagueSub">
+            Women’s “money league” + stacked rosters. High pressure, top imports.
+          </div>
+        </section>
+
+        <section class="league" id="league-brazil" onclick="location.href='league_brazil.html'">
+          <div class="leagueHead">
+            <span class="badge">⭐ star income</span>
+            <div class="leagueTitle">Brazil — Superliga (Men & Women)</div>
+          </div>
+          <div class="leagueSub">
+            Volleyball country. Big talent pipeline and strong club culture.
+          </div>
+        </section>
+
+        <section class="league" id="league-japan" onclick="location.href='league_japan.html'">
+          <div class="leagueHead">
+            <span class="badge">⭐ star income</span>
+            <div class="leagueTitle">Japan — SV.League (Men) / V.League (Women)</div>
+          </div>
+          <div class="leagueSub">
+            Fast-growing market + strong media production. Rising global impact.
+          </div>
+        </section>
+
+      </div>
+
+      <!-- RIGHT: SUPERSTAR STAGE -->
+      <aside class="stage" id="stage">
+        <div class="stageTop">
+          <img id="starImg" src="" alt="Superstar">
+        </div>
+        <div class="stageInfo">
+          <div class="starName" id="starName">—</div>
+          <div class="metaGrid" id="starMeta">
+            <div><span>Country:</span> —</div>
+            <div><span>Age:</span> —</div>
+            <div><span>Height:</span> —</div>
+            <div><span>Position:</span> —</div>
+            <div><span>Club/League:</span> —</div>
+            <div><span>Income:</span> —</div>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+<script>
+  // === SUPERSTAR DATA (update anytime) ===
+  // Images are in: assets/images/Stars/
+  const stars = [
+    // MEN (5)
+    { name:"Wilfredo León", country:"Poland", age:"31", height:"2.01 m", pos:"Outside Hitter",
+      club:"Sir Safety Perugia — Italy", income:"€1.0M", img:"assets/images/Stars/Wilfredo_Leon.jpg", leagueKey:"italy" },
+
+    { name:"Alessandro Michieletto", country:"Italy", age:"23", height:"2.11 m", pos:"Outside Hitter",
+      club:"Trentino Volley — Italy", income:"€700k", img:"assets/images/Stars/Alessandro-Michieletto.jpg", leagueKey:"italy" },
+
+    { name:"Bartłomiej Bołądź", country:"Poland", age:"30", height:"2.04 m", pos:"Opposite",
+      club:"ZAKSA — Poland", income:"€650k", img:"assets/images/Stars/Boladz.jpg", leagueKey:"poland" },
+
+    { name:"Yuki Ishikawa", country:"Japan", age:"29", height:"1.92 m", pos:"Outside Hitter",
+      club:"(example) Japan/Italy top level", income:"€800k", img:"assets/images/Stars/Yuki_Ishikawa1.jpg", leagueKey:"japan" },
+
+    { name:"Yuji Nishida", country:"Japan", age:"24", height:"1.86 m", pos:"Opposite",
+      club:"Osaka Bluteon — Japan", income:"€600k", img:"assets/images/Stars/yuji-nishida.jpg", leagueKey:"japan" },
+
+    // WOMEN (5)
+    { name:"Paola Egonu", country:"Italy", age:"26", height:"1.93 m", pos:"Opposite",
+      club:"VakıfBank — Turkey", income:"€1.1M", img:"assets/images/Stars/Paola_Egonu.jpg", leagueKey:"turkey" },
+
+    { name:"Isabelle Haak", country:"Sweden", age:"25", height:"1.94 m", pos:"Opposite",
+      club:"Imoco Conegliano — Italy", income:"€900k", img:"assets/images/Stars/isabelle-haak.jpg", leagueKey:"italy" },
+
+    { name:"Magdalena Stysiak", country:"Poland", age:"25", height:"2.03 m", pos:"Opposite",
+      club:"Fenerbahçe — Turkey", income:"€750k", img:"assets/images/Stars/Stysiak.jpg", leagueKey:"turkey" },
+
+    { name:"Zhu Ting", country:"China", age:"30", height:"1.98 m", pos:"Outside Hitter",
+      club:"(example) Italy/Turkey top level", income:"€1.0M", img:"assets/images/Stars/Zhu_Ting.jpg", leagueKey:"italy" },
+
+    { name:"Alessandro Michieletto", country:"Italy", age:"23", height:"2.11 m", pos:"Outside Hitter",
+             club:"Trentino Volley — Italy", income:"€700k", img:"assets/images/Stars/Alessandro-Michieletto.jpg", leagueKey:"italy" },
+
+  ];
+
+  const elHero = document.getElementById('hero');
+  const elDim  = document.getElementById('dim');
+
+  const elLeagues = [
+    document.getElementById('league-italy'),
+    document.getElementById('league-poland'),
+    document.getElementById('league-turkey'),
+    document.getElementById('league-brazil'),
+    document.getElementById('league-japan'),
+  ];
+
+  const stage = document.getElementById('stage');
+  const starImg  = document.getElementById('starImg');
+  const starName = document.getElementById('starName');
+  const starMeta = document.getElementById('starMeta');
+
+  function blinkLeague(key){
+    const el = document.getElementById('league-' + key);
+    if(!el) return;
+    el.classList.remove('blink');
+    void el.offsetWidth; // restart animation
+    el.classList.add('blink');
+  }
+
+  function renderStar(s){
+    starImg.src = s.img;
+    starName.textContent = s.name;
+
+    starMeta.innerHTML = `
+      <div><span>Country:</span> ${s.country}</div>
+      <div><span>Age:</span> ${s.age}</div>
+      <div><span>Height:</span> ${s.height}</div>
+      <div><span>Position:</span> ${s.pos}</div>
+      <div><span>Club/League:</span> ${s.club}</div>
+      <div><span>Income:</span> ${s.income}</div>
+    `;
+
+    blinkLeague(s.leagueKey);
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    // 1) headline in
+    setTimeout(() => elHero.classList.add('show'), 250);
+
+    // 2) background dims
+    setTimeout(() => elDim.classList.add('on'), 1100);
+
+    // 3) left boxes + stage appear one-by-one
+    const start = 1450;
+    const step  = 210;
+
+    elLeagues.forEach((el, i) => {
+      setTimeout(() => el.classList.add('show'), start + i * step);
+    });
+
+    setTimeout(() => stage.classList.add('show'), start + elLeagues.length * step + 120);
+
+    // 4) stars face in one after another (big image stays same size)
+    let idx = 0;
+    const firstStarAt = start + elLeagues.length * step + 420;
+
+    function showNextStar(){
+      const s = stars[idx];
+
+      // small transition for "face in"
+      stage.classList.add('fadeOut');
+      setTimeout(() => {
+        renderStar(s);
+        stage.classList.remove('fadeOut');
+      }, 220);
+
+      idx++;
+      if(idx < stars.length){
+        setTimeout(showNextStar, 5000);
+      }
+    }
+
+    // load first star only after stage is visible
+    setTimeout(() => {
+      renderStar(stars[0]);
+      blinkLeague(stars[0].leagueKey);
+      idx = 1;
+      setTimeout(showNextStar, 5000);
+    }, firstStarAt);
+  });
+</script>
+
+</body>
+</html>

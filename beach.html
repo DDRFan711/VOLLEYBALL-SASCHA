@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Beach Volleyball</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  padding:0;
+  height:100%;
+  overflow:hidden;
+  font-family:"Segoe UI",Arial,sans-serif;
+  color:#fff;
+}
+
+/* BACKGROUND (same as history) */
+body{
+  background:
+    linear-gradient(rgba(6,10,18,.55), rgba(6,10,18,.35)),
+    url("assets/images/history-bg.png") center/cover no-repeat fixed;
+}
+
+/* Back button */
+.backBtn{
+  position:fixed;
+  left:18px;
+  top:14px;
+  z-index:99999;
+  padding:10px 16px;
+  border-radius:999px;
+  border:none;
+  cursor:pointer;
+  background:linear-gradient(135deg,#ffd200,#ff7a18);
+  color:#102a56;
+  font-weight:950;
+  box-shadow:0 14px 30px rgba(0,0,0,.35);
+}
+
+/* ===== HISTORY-STYLE PILL TITLE (match) ===== */
+.titleWrap{
+  position:fixed;
+  top:14px;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(1180px, calc(100% - 160px));
+  z-index:9999;
+}
+
+.heroTitle{
+  width:100%;
+  padding:18px 22px;
+  border-radius:999px;
+  background:rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.14);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  box-shadow:0 18px 50px rgba(0,0,0,.55);
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+
+/* animated gradient text like History */
+.heroTitle .t1{
+  font-weight:950;
+  font-size:clamp(28px, 4.4vw, 56px);
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  line-height:1.1;
+  display:inline-block;
+
+  background:linear-gradient(90deg,#ffd200,#ff7a18,#ff4fd8,#ffd200);
+  background-size:260% 100%;
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  text-shadow:0 10px 26px rgba(0,0,0,.35);
+
+  animation:titleFlow 3.6s linear infinite;
+
+  /* “young vibe” like your history/business pages */
+  font-family:"Comic Sans MS","Trebuchet MS",system-ui,Arial,sans-serif;
+}
+
+@keyframes titleFlow{
+  0%{background-position:0% 50%}
+  100%{background-position:100% 50%}
+}
+
+/* shine sweep */
+.heroTitle::after{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background:linear-gradient(90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,.18) 50%,
+    rgba(255,255,255,0) 100%);
+  transform:rotate(10deg) translateX(-60%);
+  mix-blend-mode:screen;
+  opacity:.75;
+  pointer-events:none;
+  animation:shine 3.2s linear infinite;
+}
+@keyframes shine{
+  0%{transform:rotate(10deg) translateX(-70%)}
+  100%{transform:rotate(10deg) translateX(70%)}
+}
+
+/* typing caret like History vibe */
+.caret{
+  display:inline-block;
+  width:10px;
+  margin-left:6px;
+  transform:translateY(2px);
+  border-right:4px solid rgba(255,255,255,.95);
+  height:1em;
+  animation:blink 0.85s steps(1,end) infinite;
+}
+@keyframes blink{
+  50%{opacity:0}
+}
+
+/* ===== Main layout ===== */
+.wrapper{
+  position:absolute;
+  inset:120px 40px 40px 40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:80px;
+}
+
+/* Info boxes */
+.box{
+  width:500px;
+  height:520px;
+  padding:30px 34px;
+  border-radius:24px;
+  background:rgba(15,20,35,.65);
+  backdrop-filter:blur(12px);
+  font-size:21px;
+  line-height:1.55;
+  animation:pop 1s ease forwards;
+  box-shadow:0 18px 40px rgba(0,0,0,.45);
+  border:1px solid rgba(255,255,255,.12);
+}
+.box h2{
+  margin-top:0;
+  font-size:26px;
+  color:#ffd45a;
+}
+
+/* Center buttons */
+.starButtons{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+  z-index:30;
+}
+.starBtn{
+  padding:18px 34px;
+  border-radius:999px;
+  font-size:20px;
+  font-weight:950;
+  text-decoration:none;
+  color:#111;
+  background:linear-gradient(135deg,#ffe000,#ff7a18);
+  box-shadow:0 0 20px rgba(255,200,0,.7);
+  transition:.3s;
+}
+.starBtn:hover{
+  transform:scale(1.08);
+  box-shadow:0 0 40px rgba(255,220,50,.9);
+}
+
+@keyframes pop{
+  from{opacity:0; transform:scale(.94)}
+  to{opacity:1; transform:scale(1)}
+}
+
+@media (max-width: 1100px){
+  html,body{overflow:auto}
+  .wrapper{position:relative; inset:auto; padding:140px 18px 24px; flex-direction:column; gap:18px}
+  .box{width:100%; height:auto}
+  .starButtons{position:relative; left:auto; top:auto; transform:none; margin:10px auto 18px}
+  .titleWrap{width:min(1180px, calc(100% - 36px))}
+}
+</style>
+</head>
+
+<body>
+
+<button class="backBtn" onclick="location.href='index.html'">← Back</button>
+
+<div class="titleWrap">
+  <div class="heroTitle">
+    <span class="t1"><span id="typeTarget"></span><span class="caret"></span></span>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  <div class="box">
+    <h2>Brief history – Beach Volleyball</h2>
+    <ul>
+      <li><b>1915</b> – First beach volleyball games in Hawaii, played with 6 players per side.</li>
+      <li><b>1920/30</b> – Played in Santa Monica. Two-on-two first mentioned (Paul Johnston).</li>
+      <li><b>1948</b> – First official two-man tournament in Santa Monica (crate of Pepsi).</li>
+      <li><b>1950/60</b> – Becomes lifestyle sport in California.</li>
+      <li><b>1996</b> – Olympic sport at Atlanta Games.</li>
+      <li><b>2000</b> – FIVB World Tour → today’s Beach Pro Tour. Prize money main income source.</li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h2>Main rules – Beach Volleyball</h2>
+    <ul>
+      <li><b>Court & Net:</b> 8×16 m, men 2.43 m, women 2.24 m</li>
+      <li><b>Scoring:</b> Best of 3, sets to 21, tie-break to 15 (win by 2)</li>
+      <li><b>Players:</b> 2 per team</li>
+      <li><b>Contact:</b> 3 touches, no double contacts (block exception)</li>
+      <li><b>Coach:</b> Instructions allowed between rallies</li>
+      <li><b>Net serves:</b> Live if ball crosses net</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="starButtons">
+  <a href="beach_star_men.html" class="starBtn">⭐ Stars Men</a>
+  <a href="beach_stars_woman.html" class="starBtn">⭐ Stars Women</a>
+</div>
+
+<script>
+/* Type-in like History vibe */
+(function(){
+  const text = "BEACH VOLLEYBALL";
+  const el = document.getElementById("typeTarget");
+  let i = 0;
+
+  function tick(){
+    el.textContent = text.slice(0, i);
+    i++;
+    if(i <= text.length) requestAnimationFrame(()=>setTimeout(tick, 40));
+  }
+  tick();
+})();
+</script>
+
+</body>
+</html>

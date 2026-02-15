@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FIVB World Championships – Highlight</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+
+<style>
+/* SAME STYLE AS OLYMPICS – unchanged */
+html,body{margin:0;height:100%;overflow:hidden;font-family:Segoe UI,Arial,sans-serif;background:#000;}
+.stage{position:relative;width:100vw;height:100vh;overflow:hidden;}
+.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(1px);}
+.veil{position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,rgba(0,0,0,.15),rgba(0,0,0,.55));}
+.titleWrap{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:5;}
+.title{padding:12px 26px;border-radius:999px;background:rgba(0,0,0,.35);backdrop-filter:blur(10px);
+font-size:34px;font-weight:900;letter-spacing:.14em;
+background:linear-gradient(90deg,#ffd200,#ff58d8,#7cffef,#ffd200);
+-webkit-background-clip:text;color:transparent;background-size:200% 100%;animation:shine 6s linear infinite;}
+@keyframes shine{to{background-position:200% 50%}}
+.backBtn{position:fixed;top:18px;right:20px;padding:10px 16px;border-radius:999px;border:none;
+font-weight:900;background:linear-gradient(135deg,#ffd200,#ff7a18);color:#102a56;cursor:pointer;z-index:6;}
+.panel{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);
+width:min(720px,90vw);padding:26px;border-radius:28px;
+background:rgba(255,255,255,.10);backdrop-filter:blur(12px);
+box-shadow:0 30px 80px rgba(0,0,0,.45);color:#fff;}
+.videoLink{display:inline-flex;align-items:center;gap:10px;padding:14px 20px;border-radius:999px;
+background:linear-gradient(135deg,#ffd200,#ff7a18);color:#102a56;font-weight:900;text-decoration:none;}
+</style>
+</head>
+
+<body>
+<div class="stage">
+  <img class="bg" src="assets/images/history-bg.png">
+  <div class="veil"></div>
+
+  <div class="titleWrap">
+    <div class="title">WORLD CHAMPIONSHIPS – HIGHLIGHT</div>
+  </div>
+
+  <button class="backBtn" onclick="location.href='international_volleyball_today.html'">← Back</button>
+
+  <div class="panel">
+    <h2>FIVB World Championships 🌍</h2>
+    <p>The “real world title” – pure volleyball, historic rivalries, iconic finals.</p>
+
+    <a class="videoLink"
+       href="https://www.youtube.com/watch?v=qh--xaBc8i8"
+       target="_blank">
+       ▶ Watch World Championship highlight
+    </a>
+  </div>
+</div>
+</body>
+</html>

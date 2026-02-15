@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Health & Volleyball</title>
+
+<style>
+  html,body{
+    margin:0;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  }
+
+  .stage{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+  }
+
+  /* Background (same as History) */
+  .bg{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    transform:scale(1.02);
+    transition:filter 1.2s ease, opacity 1.2s ease;
+    user-select:none; pointer-events:none;
+    opacity:1;
+    z-index:1;
+  }
+
+  .veil{
+    position:absolute; inset:0;
+    background:radial-gradient(circle at 50% 35%, rgba(0,0,0,.00), rgba(0,0,0,.18));
+    opacity:0;
+    transition:opacity 1.2s ease;
+    pointer-events:none;
+    z-index:2;
+  }
+
+  /* Title (history-like) */
+  .titleWrap{
+    position:fixed;
+    top:18px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:2147483000;
+    width:min(1400px, 96vw);
+    display:flex;
+    justify-content:center;
+    pointer-events:none;
+  }
+
+  .title{
+    margin:0;
+    padding:10px 18px;
+    border-radius:999px;
+    background:rgba(0,0,0,.22);
+    border:1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(10px);
+    box-shadow:0 18px 46px rgba(0,0,0,.25);
+    font-family: "Segoe Script","Comic Sans MS","Brush Script MT","Trebuchet MS",system-ui,sans-serif;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    font-size:clamp(18px, 2.5vw, 34px);
+  }
+
+  .title span{
+    background: linear-gradient(90deg, #ffe600 0%, #ff7a00 35%, #ff2bd6 70%, #7cffef 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:
+      0 0 10px rgba(255,230,0,.35),
+      0 0 18px rgba(255,50,214,.25),
+      0 10px 30px rgba(0,0,0,.35);
+  }
+
+  .caret{
+    display:inline-block;
+    width:10px;
+    margin-left:6px;
+    border-right:3px solid rgba(255,230,0,.85);
+    transform: translateY(2px);
+    animation: blink 800ms steps(1) infinite;
+  }
+  @keyframes blink{ 50%{opacity:0;} }
+
+  /* Content layout (bigger panel) */
+  .content{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 78px 3vw 18px; /* more space for the panel */
+    z-index:10;
+  }
+
+  .panel{
+    width:min(1400px, 98vw);          /* bigger overall block */
+    max-height: calc(100vh - 110px);  /* keep it inside the viewport */
+    opacity:0;
+    transform: translateY(18px) scale(.97);
+    transition: opacity 900ms ease, transform 900ms cubic-bezier(.2,.9,.2,1);
+  }
+
+  .panelInner{
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+    backdrop-filter: blur(8px);
+    box-shadow: 0 22px 60px rgba(0,0,0,.35);
+    border: 1px solid rgba(255,255,255,.14);
+    position:relative;
+    overflow:hidden;
+    padding: 16px;
+  }
+
+  .panelInner::before{
+    content:"";
+    position:absolute; inset:-2px;
+    border-radius: 24px;
+    background: conic-gradient(from 180deg,
+      rgba(255,210,0,.90),
+      rgba(0,190,255,.85),
+      rgba(255,60,210,.75),
+      rgba(255,210,0,.90)
+    );
+    filter: blur(14px);
+    opacity:.28;
+    z-index:0;
+  }
+
+  /* If you ever add more content later, panel can scroll internally (no page scroll) */
+  .panelBody{
+    position:relative;
+    z-index:1;
+    max-height: calc(100vh - 150px);
+    overflow:auto;
+    padding-right: 6px;
+  }
+  /* subtle scrollbar (optional) */
+  .panelBody::-webkit-scrollbar{ width:10px; }
+  .panelBody::-webkit-scrollbar-thumb{
+    background: rgba(255,255,255,.18);
+    border-radius: 999px;
+    border: 2px solid rgba(0,0,0,.18);
+  }
+
+  /* FIRST wide block (readable without zoom) */
+  .hero{
+    border-radius:18px;
+    background: rgba(0,0,0,.16);
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: 0 18px 46px rgba(0,0,0,.22);
+    padding: 14px 14px 10px;
+  }
+
+  .heroTop{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom: 8px;
+  }
+
+  .heroTitle{
+    margin:0;
+    font-size: clamp(18px, 2.0vw, 26px);
+    letter-spacing:.2px;
+    text-shadow: 0 10px 24px rgba(0,0,0,.35);
+  }
+
+  .pill{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:999px;
+    background:linear-gradient(90deg,#ffe600,#ff7a00,#ff2bd6,#7cffef);
+    color:#2a0b3f;
+    text-shadow:0 0 6px rgba(255,255,255,.35);
+    font-weight:900;
+    font-size:12px;
+    letter-spacing:.35px;
+    box-shadow:0 0 14px rgba(255,122,0,.35);
+    white-space:nowrap;
+  }
+
+  .hero ul{
+    margin: 8px 0 0;
+    padding-left: 18px;
+    color: rgba(255,255,255,.94);
+    font-weight: 650;
+    line-height:1.5;
+  }
+  .hero li{ margin: 8px 0; }
+
+  /* 3 boxes row */
+  .row{
+    display:grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  .box{
+    grid-column: span 4;
+    border-radius:18px;
+    background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: 0 18px 46px rgba(0,0,0,.22);
+    padding: 12px 12px 12px;
+    position:relative;
+    overflow:hidden;
+    min-height: 220px;   /* taller so bullets are readable */
+    cursor: default;     /* no zoom function */
+    display:flex;
+    flex-direction:column;
+  }
+
+  .badge{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:999px;
+    background:linear-gradient(90deg,#ffe600,#ff7a00,#ff2bd6,#7cffef);
+    color:#2a0b3f;
+    text-shadow:0 0 6px rgba(255,255,255,.35);
+    font-weight:900;
+    font-size:12px;
+    letter-spacing:.35px;
+    box-shadow:0 0 14px rgba(255,122,0,.35);
+    margin-bottom:8px;
+    width: fit-content;
+  }
+
+  .box h3{
+    margin: 2px 0 6px;
+    font-size: 18px;
+    text-shadow: 0 10px 22px rgba(0,0,0,.25);
+  }
+
+  /* Bullet lists inside the boxes (readable, no zoom) */
+  .box ul{
+    margin: 6px 0 0;
+    padding-left: 18px;
+    color: rgba(255,255,255,.92);
+    font-weight: 650;
+    line-height: 1.35;
+    font-size: 13px;
+  }
+  .box li{ margin: 6px 0; }
+
+  /* Reveal (same concept as History) */
+  .stage.reveal .bg{ filter: blur(2px) saturate(.95) contrast(.98); opacity:.78; }
+  .stage.reveal .veil{ opacity:1; }
+  .stage.reveal .panel{ opacity:1; transform: translateY(0) scale(1); }
+
+  /* Back button */
+  .backBtn{
+    position:fixed;
+    right:20px;
+    top:20px;
+    z-index:10000;
+    padding:10px 15px;
+    background:#ffcc00;
+    color:#000;
+    font-weight:bold;
+    text-decoration:none;
+    border-radius:5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  @media (max-width: 920px){
+    .row{ gap: 10px; }
+    .box{ grid-column: span 6; min-height: 220px; }
+  }
+  @media (max-width: 620px){
+    .box{ grid-column: span 12; }
+    .heroTop{ flex-direction:column; align-items:flex-start; }
+  }
+
+  /* ===== Floating pictures – editable positions & size ===== */
+  .picLayer{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:2147483500; /* absolute top layer */
+  }
+
+  /* Easy controls (change ONLY these values) */
+  :root{
+    --pic1-size:340px; --pic1-x:72vw; --pic1-y:8vh; --pic1-rot:8deg;
+    --pic2-size:320px; --pic2-x:25vw; --pic2-y:75vh; --pic2-rot:6deg;
+    --pic3-size:300px; --pic3-x:8vw;  --pic3-y:7vh; --pic3-rot:-6deg;
+  }
+
+  .floatPic{
+    position:absolute;
+    width:var(--size);
+    border-radius:14px;
+    box-shadow:0 20px 44px rgba(0,0,0,.50);
+    opacity:0;
+    transform:translateY(22px) scale(.92) rotate(var(--rot));
+    transition:opacity 900ms ease, transform 900ms cubic-bezier(.2,.9,.2,1);
+  }
+
+  .pic1{ left:var(--pic1-x); top:var(--pic1-y); --size:var(--pic1-size); --rot:var(--pic1-rot); }
+  .pic2{ left:var(--pic2-x); top:var(--pic2-y); --size:var(--pic2-size); --rot:var(--pic2-rot); }
+  .pic3{ left:var(--pic3-x); top:var(--pic3-y); --size:var(--pic3-size); --rot:var(--pic3-rot); }
+
+  .stage.showPic1 .pic1,
+  .stage.showPic2 .pic2,
+  .stage.showPic3 .pic3{
+    opacity:1;
+    transform:translateY(0) scale(1) rotate(var(--rot));
+  }
+</style>
+</head>
+
+<body>
+<div class="stage" id="stage">
+  <!-- SAME background file as history -->
+  <img class="bg" src="history-bg.png" alt="bg">
+  <div class="veil"></div>
+
+  <!-- Floating pictures -->
+  <div class="picLayer" aria-hidden="true">
+    <img src="assets/images/Health_benefits.jpg" class="floatPic pic1" alt="">
+    <img src="assets/images/shaking.jpg" class="floatPic pic2" alt="">
+    <img src="assets/images/Team_motivation.jpeg" class="floatPic pic3" alt="">
+
+    
+  </div>
+
+  <div class="titleWrap">
+    <div class="title">
+      <span id="titleText"></span><span class="caret" id="caret"></span>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="panel" id="panel">
+      <div class="panelInner">
+        <div class="panelBody">
+
+          <!-- Block 1 (wide, readable) -->
+          <div class="hero">
+            <div class="heroTop">
+              <h2 class="heroTitle">Volleyball – great for kids</h2>
+              <span class="pill">YOUTH FRIENDLY</span>
+            </div>
+
+            <ul>
+              <li><b>No contact sport</b> – lower injury risks compared to football, basketball, boxing and many others.</li>
+              <li>Helps the development of <b>motor skills</b>.</li>
+              <li>Starting at school – <b>life long opportunities</b>, suitable for all sexes, ages and locations.</li>
+              <li>Helps to <b>socialize</b> and interact with others, especially important in times over social media challenges.</li>
+            </ul>
+          </div>
+
+          <!-- 3 boxes (texts directly readable, no zoom) -->
+          <div class="row" aria-label="Benefits">
+            <div class="box">
+              <div class="badge">PHYSICAL</div>
+              <h3>Physical benefits</h3>
+              <ul>
+                <li>Strengthen muscles</li>
+                <li>Improve eye - leg - arm coordination</li>
+                <li>Improve reflexes</li>
+                <li>Improve agility and flexibility</li>
+                <li>Helps weight control a.o.</li>
+              </ul>
+            </div>
+
+            <div class="box">
+              <div class="badge">MENTAL</div>
+              <h3>Mental benefits</h3>
+              <ul>
+                <li>Improve discipline and patience</li>
+                <li>Improve fast decision making</li>
+                <li>Helps to control stress and anxiety</li>
+                <li>Improve self-esteem</li>
+                <li>Improve focus and concentration</li>
+              </ul>
+            </div>
+
+            <div class="box">
+              <div class="badge">SOCIAL</div>
+              <h3>Social benefits</h3>
+              <ul>
+                <li>Improves team spirit, teamwork and communication</li>
+                <li>Fun way to stay active with friends</li>
+                <li>Builds friendships behind the court, reduction of social isolation</li>
+                <li>Teaching fairness, respect, dedication, mutual support and leadership skills</li>
+                <li>Community building</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<a class="backBtn" href="index.html">← Back to coverpage</a>
+
+<script>
+  const stage     = document.getElementById("stage");
+  const titleText = document.getElementById("titleText");
+  const caret     = document.getElementById("caret");
+
+  const SHOW_BG_ONLY_MS = 650;
+  const TYPE_SPEED_MS   = 38;
+  const REVEAL_MS       = 1250;
+
+  const TITLE = "HEALTH & VOLLEYBALL";
+
+  function typeTitle(){
+    let i=0;
+    (function tick(){
+      titleText.textContent = TITLE.slice(0,i++);
+      if(i <= TITLE.length) setTimeout(tick, TYPE_SPEED_MS);
+      else caret.style.display = "none";
+    })();
+  }
+
+  window.addEventListener("load", ()=>{
+    setTimeout(typeTitle, SHOW_BG_ONLY_MS);
+    setTimeout(()=>stage.classList.add("reveal"), REVEAL_MS);
+
+    /* pictures fade in one-by-one */
+    setTimeout(()=>stage.classList.add("showPic1"), REVEAL_MS + 900);
+    setTimeout(()=>stage.classList.add("showPic2"), REVEAL_MS + 1700);
+    setTimeout(()=>stage.classList.add("showPic3"), REVEAL_MS + 2500);
+  });
+</script>
+</body>
+</html>

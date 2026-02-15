@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Volleyball</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+html,body{
+  margin:0; width:100%; height:100%;
+  background:#000; overflow:hidden;
+  font-family:Arial,sans-serif;
+}
+#stage{ position:relative; width:100vw; height:100vh; }
+#cover{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:contain;
+  object-position:center;
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-drag:none;
+  display:block;
+}
+
+/* Invisible clickable spots */
+.spot{
+  position:absolute;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  z-index:3;
+  cursor:pointer;
+  background:transparent;
+  outline:none;
+}
+
+/* Jumper */
+#jumper{
+  position:absolute;
+  width:90px; height:90px;
+  background:url("jumper.png") center/contain no-repeat;
+  pointer-events:none;
+  z-index:6;
+  filter:drop-shadow(0 14px 16px rgba(0,0,0,.4));
+}
+
+/* Glow trail */
+.trail{
+  position:absolute;
+  width:18px; height:18px;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle,#fff8a8,#ffd200 45%,rgba(255,210,0,0) 70%);
+  pointer-events:none;
+  z-index:5;
+  animation:fade .7s linear forwards;
+}
+@keyframes fade{
+  to{opacity:0; transform:translate(-50%,-50%) scale(2.2);}
+}
+
+/* ===== Owner counter overlay ===== */
+#ownerCounter{
+  display:none;
+  position:fixed;
+  left:50%;
+  bottom:24px;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,.78);
+  color:#ffe600;
+  padding:12px 18px;
+  border-radius:14px;
+  font-weight:800;
+  z-index:99999;
+  border:2px solid rgba(255,230,0,.6);
+}
+
+/* ===== Owner button ===== */
+#ownerBtn{
+  position:fixed;
+  left:12px;
+  bottom:20px;
+  z-index:99999;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid rgba(255,230,0,.6);
+  background:rgba(0,0,0,.55);
+  color:#ffe600;
+  font-weight:800;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+<div id="stage">
+  <img id="cover" src="Coverpage-neu.png" alt="Volleyball cover">
+  <div id="jumper"></div>
+</div>
+
+<div id="ownerCounter">Visitors: …</div>
+<button id="ownerBtn">Owner</button>
+
+<script>
+/* ===== Localhost check ===== */
+const isLocalhost =
+  location.hostname === "localhost" || location.hostname === "127.0.0.1";
+
+/* ===== Track visit (index only) ===== */
+try{
+  if (!sessionStorage.getItem("vf_visited")){
+    sessionStorage.setItem("vf_visited","1");
+    fetch("/track",{cache:"no-store"}).catch(()=>{});
+  }
+}catch(e){}
+
+/* ===== Owner counter (SAFE, no click blocking) ===== */
+const ownerBtn = document.getElementById("ownerBtn");
+const ownerBox = document.getElementById("ownerCounter");
+
+ownerBtn.style.display = isLocalhost ? "block" : "none";
+
+ownerBtn.onclick = async () => {
+  if (!isLocalhost){
+    ownerBox.textContent = "Owner only on localhost";
+    ownerBox.style.display="block";
+    return;
+  }
+  try{
+    const r = await fetch("/owner-stats",{cache:"no-store"});
+    if (!r.ok){
+      ownerBox.textContent = "Error: " + r.status;
+    }else{
+      const d = await r.json();
+      ownerBox.textContent = "Visitors: " + d.visitors;
+    }
+  }catch(e){
+    ownerBox.textContent = "Flask not running?";
+  }
+  ownerBox.style.display="block";
+  setTimeout(()=>ownerBox.style.display="none",6000);
+};
+
+/* ===== Ball positions ===== */
+const balls = [
+ {x:19,y:25,r:150,href:"history.html"},
+ {x:13,y:43,r:150,href:"international_volleyball_today.html"},
+ {x:18,y:59,r:165,href:"health_volleyball.html"},
+ {x:78,y:28,r:155,href:"who.html"},
+ {x:63,y:43,r:170,href:"volleyball_business.html"},
+ {x:87,y:45,r:170,href:"beach.html"},
+ {x:71,y:60,r:170,href:"improve.html"},
+ {x:86,y:60,r:170,href:"from_basics_to_perfection.html"},
+ {x:61,y:72,r:145,href:"eis.html"},
+ {x:74,y:83,r:175,href:"progress.html"},
+ {x:16,y:84,r:210,href:"bibliography_contact.html"}
+];
+
+const stage=document.getElementById("stage");
+const img=document.getElementById("cover");
+const jumper=document.getElementById("jumper");
+
+function imageRect(){
+  const sw=stage.clientWidth, sh=stage.clientHeight;
+  const iw=img.naturalWidth||1, ih=img.naturalHeight||1;
+  const sr=sw/sh, ir=iw/ih;
+  let w,h,x,y;
+  if(ir>sr){w=sw;h=sw/ir;x=0;y=(sh-h)/2;}
+  else{h=sh;w=sh*ir;y=0;x=(sw-w)/2;}
+  return{x,y,w,h};
+}
+
+function responsive(px){
+  const m=Math.min(stage.clientWidth,stage.clientHeight);
+  return Math.round(px*Math.max(.78,Math.min(1.18,m/900)));
+}
+
+function buildSpots(){
+  document.querySelectorAll(".spot").forEach(e=>e.remove());
+  const r=imageRect();
+  balls.forEach(b=>{
+    const a=document.createElement("a");
+    a.className="spot";
+    a.href=b.href;
+    a.style.left=(r.x+b.x/100*r.w)+"px";
+    a.style.top =(r.y+b.y/100*r.h)+"px";
+    const d=responsive(b.r);
+    a.style.width=d+"px";
+    a.style.height=d+"px";
+    stage.appendChild(a);
+  });
+}
+
+/* Jumper animation */
+let idx=0,pos={x:0,y:0};
+function trail(x,y){
+  const t=document.createElement("div");
+  t.className="trail";
+  t.style.left=x+"px";
+  t.style.top =y+"px";
+  stage.appendChild(t);
+  setTimeout(()=>t.remove(),700);
+}
+function hop(){
+  const r=imageRect(),b=balls[idx];
+  const tx=r.x+b.x/100*r.w, ty=r.y+b.y/100*r.h;
+  let t=0,sx=pos.x,sy=pos.y;
+  function a(){
+    t+=.012;
+    if(t>=1){pos={x:tx,y:ty};idx=(idx+1)%balls.length;setTimeout(hop,1500);return;}
+    const x=sx+(tx-sx)*t;
+    const y=sy+(ty-sy)*t-Math.sin(t*Math.PI)*110;
+    jumper.style.transform=`translate(${x-45}px,${y-45}px)`;
+    trail(x,y);
+    requestAnimationFrame(a);
+  }
+  a();
+}
+
+img.onload=()=>{
+  buildSpots();
+  const r=imageRect();
+  pos.x=r.x+balls[0].x/100*r.w;
+  pos.y=r.y+balls[0].y/100*r.h;
+  jumper.style.transform=`translate(${pos.x-45}px,${pos.y-45}px)`;
+  setTimeout(hop,900);
+};
+window.addEventListener("resize",buildSpots);
+</script>
+</body>
+</html>

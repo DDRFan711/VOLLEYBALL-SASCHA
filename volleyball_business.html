@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Volleyball and Business</title>
+
+<style>
+html,body{
+  margin:0;
+  height:100%;
+  overflow:hidden;
+  font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  color:#fff;
+  background:#000 url("history-bg.png") center/cover fixed no-repeat;
+}
+
+/* ===== HISTORY TITLE (EXACT) ===== */
+.titleWrap{
+  position:fixed;
+  top:18px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:2147483000;
+  width:min(1100px, 94vw);
+  display:flex;
+  justify-content:center;
+  pointer-events:none;
+}
+.title{
+  margin:0;
+  padding:10px 18px;
+  border-radius:999px;
+  background:rgba(0,0,0,.22);
+  border:1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(10px);
+  box-shadow:0 18px 46px rgba(0,0,0,.25);
+  font-family:"Segoe Script","Comic Sans MS","Brush Script MT","Trebuchet MS",system-ui,sans-serif;
+  font-weight:700;
+  letter-spacing:.6px;
+  text-transform:uppercase;
+  font-size:clamp(18px, 2.5vw, 34px);
+}
+.title span{
+  background: linear-gradient(90deg,#ffe600 0%,#ff7a00 35%,#ff2bd6 70%,#7cffef 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  text-shadow:
+    0 0 10px rgba(255,230,0,.35),
+    0 0 18px rgba(255,50,214,.25),
+    0 10px 30px rgba(0,0,0,.35);
+}
+.caret{
+  display:inline-block;
+  width:10px;
+  margin-left:6px;
+  border-right:3px solid rgba(255,230,0,.85);
+  transform: translateY(2px);
+  animation: blink 800ms steps(1) infinite;
+}
+@keyframes blink{50%{opacity:0;}}
+
+body{padding-top:110px}
+
+/* ===== TOP BUTTON ===== */
+.topBtns{
+  position:fixed;
+  right:18px;
+  top:14px;
+  z-index:9999;
+}
+.btnCover{
+  padding:10px 16px;
+  border-radius:999px;
+  border:none;
+  cursor:pointer;
+  font-weight:900;
+  background:linear-gradient(135deg,#ffd200,#ff7a18);
+  color:#102a56;
+  box-shadow:0 14px 30px rgba(0,0,0,.35);
+}
+
+/* ===== LAYOUT (CENTERED FIX) ===== */
+.layout{
+  height:calc(100vh - 130px);
+  padding:0 30px 30px;
+  display:grid;
+  grid-template-columns:minmax(520px,820px) 380px;
+  gap:22px;
+  align-items:center;
+
+  /* 🔧 THE FIX */
+  max-width:1300px;
+  margin:0 auto;
+}
+
+/* ===== PYRAMID ===== */
+.leftCenter{display:flex;justify-content:center;}
+.pyramid{
+  width:min(760px,100%);
+  height:520px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  gap:18px;
+}
+.layer{
+  margin:0 auto;
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 18px 40px rgba(0,0,0,.45);
+}
+.layerLink{color:#fff;text-decoration:none}
+.layer h3{margin:0 0 6px;font-size:30px;font-weight:950;text-align:center}
+.layer p{text-align:center;font-size:15px;opacity:.95}
+
+.top{width:60%;height:130px;background:linear-gradient(135deg,#3a2a7a,#6f57d8);clip-path:polygon(10% 0%,90% 0%,100% 100%,0% 100%)}
+.mid{width:78%;height:160px;background:linear-gradient(135deg,#6e5b0f,#c6a41e);clip-path:polygon(8% 0%,92% 0%,100% 100%,0% 100%)}
+.base{width:94%;height:135px;background:linear-gradient(135deg,#083447,#0a5d7a);clip-path:polygon(6% 0%,94% 0%,100% 100%,0% 100%)}
+
+/* ===== VIDEO COLUMN ===== */
+.rightCol{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+.videoBox{
+  height:170px;
+  border-radius:22px;
+  background:rgba(0,0,0,.28);
+  box-shadow:0 20px 50px rgba(0,0,0,.45);
+  overflow:hidden;
+  position:relative;
+}
+.videoBox img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:brightness(.85);
+}
+.ytBtn{
+  position:absolute;
+  left:50%;
+  bottom:16px;
+  transform:translateX(-50%);
+  padding:10px 18px;
+  border-radius:999px;
+  border:none;
+  cursor:pointer;
+  font-weight:950;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  background:linear-gradient(135deg,#ffd200,#ff7a18);
+  color:#102a56;
+  box-shadow:0 14px 30px rgba(0,0,0,.45);
+}
+.ytBtn:hover{transform:translateX(-50%) scale(1.05)}
+
+@media(max-width:1100px){
+  body{overflow:auto}
+  .layout{grid-template-columns:1fr;height:auto}
+}
+</style>
+</head>
+
+<body>
+
+<div class="topBtns">
+  <button class="btnCover" onclick="location.href='index.html'">← Back to cover</button>
+</div>
+
+<div class="titleWrap">
+  <h1 class="title">
+    <span id="titleText"></span><i class="caret" id="caret"></i>
+  </h1>
+</div>
+
+<div class="layout">
+
+  <section class="leftCenter">
+    <div class="pyramid">
+      <div class="layer top">
+        <a class="layerLink" href="business_fivb.html">
+          <h3>FIVB global titles</h3>
+          <p>🏆 Club World Championship (men & women). The global peak of club volleyball.</p>
+        </a>
+      </div>
+      <div class="layer mid">
+        <a class="layerLink" href="business_continental.html">
+          <h3>Continental championships</h3>
+          <p>✨ CEV (Europe) is #1, then CSV (South America), then AVC (Asia).</p>
+        </a>
+      </div>
+      <div class="layer base">
+        <a class="layerLink" href="business_leagues.html">
+          <h3>National leagues</h3>
+          <p>🔥 Italy Superlega, Poland PlusLiga, Brazil Superliga… weekly hype builds stars.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <aside class="rightCol">
+    <div class="videoBox">
+      <img src="https://img.youtube.com/vi/qh--xaBc8i8/hqdefault.jpg">
+      <button class="ytBtn" onclick="window.open('https://www.youtube.com/watch?v=qh--xaBc8i8','_blank')">▶ OPEN ON YOUTUBE</button>
+    </div>
+    <div class="videoBox">
+      <img src="https://img.youtube.com/vi/nWW2w2zzH4w/hqdefault.jpg">
+      <button class="ytBtn" onclick="window.open('https://www.youtube.com/watch?v=nWW2w2zzH4w','_blank')">▶ OPEN ON YOUTUBE</button>
+    </div>
+    <div class="videoBox">
+      <img src="https://img.youtube.com/vi/dn9UhDhL8dg/hqdefault.jpg">
+      <button class="ytBtn" onclick="window.open('https://www.youtube.com/watch?v=dn9UhDhL8dg','_blank')">▶ OPEN ON YOUTUBE</button>
+    </div>
+  </aside>
+
+</div>
+
+<script src="common.js?v=4"></script>
+<script>
+(() => {
+  const titleText=document.getElementById("titleText");
+  const caret=document.getElementById("caret");
+  const TITLE="VOLLEYBALL AND BUSINESS";
+  let i=0;
+  (function tick(){
+    titleText.textContent=TITLE.slice(0,i++);
+    if(i<=TITLE.length) setTimeout(tick,38);
+    else caret.style.display="none";
+  })();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Medal Winners – Volleyball</title>
+
+  <style>
+    :root{
+      --bg1:#071a3a;
+      --bg2:#0b2e6a;
+      --glass: rgba(255,255,255,.16);
+      --glass2: rgba(255,255,255,.10);
+      --stroke: rgba(255,255,255,.22);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --r: 22px;
+      --gold:#ffd54a;
+      --silver:#d7dce6;
+      --bronze:#d39a6f;
+      --hot1:#ffd200;
+      --hot2:#ff7a18;
+      --hot3:#ff2bb6;
+      --hot4:#00c3ff;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 15% 15%, rgba(0,195,255,.25), transparent 60%),
+        radial-gradient(1100px 700px at 85% 20%, rgba(255,42,182,.18), transparent 55%),
+        radial-gradient(900px 600px at 70% 85%, rgba(255,210,0,.12), transparent 55%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    /* Top bar */
+    .topbar{
+      position: sticky;
+      top:0;
+      z-index: 50;
+      padding: 14px 16px;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(0,0,0,.32), rgba(0,0,0,.08));
+      border-bottom: 1px solid rgba(255,255,255,.10);
+    }
+    .topbar-inner{
+      max-width: 1100px;
+      margin: 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+    .title{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .title h1{
+      margin:0;
+      font-size: 18px;
+      letter-spacing:.3px;
+      line-height: 1.1;
+    }
+    .title small{
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .btn{
+      border:0;
+      cursor:pointer;
+      user-select:none;
+      padding:10px 14px;
+      border-radius:999px;
+      font-weight:800;
+      color:#0b1c3b;
+      background: linear-gradient(135deg, var(--hot1), var(--hot2));
+      box-shadow: 0 10px 20px rgba(0,0,0,.25);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      text-decoration:none;
+      white-space:nowrap;
+    }
+    .btn.secondary{
+      background: rgba(255,255,255,.18);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.20);
+      box-shadow:none;
+    }
+    .btn:active{transform: translateY(1px)}
+
+    /* Page wrap */
+    .wrap{
+      max-width:1100px;
+      margin: 18px auto 40px;
+      padding: 0 16px;
+    }
+
+    .hero{
+      background: linear-gradient(135deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding: 16px 16px;
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      backdrop-filter: blur(14px);
+    }
+    .hero p{
+      margin:0;
+      color: var(--muted);
+      font-weight:600;
+      line-height:1.35;
+      max-width: 720px;
+    }
+    .hero .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    /* Sections */
+    .section{
+      margin-top: 18px;
+      background: linear-gradient(135deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(14px);
+    }
+
+    .section-head{
+      padding: 16px 16px 12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+    }
+    .section-head h2{
+      margin:0;
+      font-size: 18px;
+      letter-spacing:.2px;
+    }
+    .section-head .sub{
+      color: var(--muted);
+      font-weight: 650;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .head-left{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+
+    .tabs{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding: 6px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .tab{
+      border:0;
+      cursor:pointer;
+      padding:8px 12px;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 900;
+      letter-spacing:.2px;
+    }
+    .tab.active{
+      color:#0b1c3b;
+      background: linear-gradient(135deg, var(--hot1), var(--hot3));
+    }
+
+    .section-body{
+      padding: 12px 16px 16px;
+    }
+
+    /* Table */
+    .table-wrap{
+      width:100%;
+      overflow:auto;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+    }
+    table{
+      width:100%;
+      border-collapse: collapse;
+      min-width: 520px;
+    }
+    thead th{
+      text-align:left;
+      font-size: 12px;
+      color: rgba(255,255,255,.82);
+      letter-spacing: .35px;
+      padding: 12px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      position: sticky;
+      top: 0;
+      background: rgba(0,0,0,.26);
+      backdrop-filter: blur(8px);
+      z-index: 2;
+    }
+    tbody td{
+      padding: 12px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      color: rgba(255,255,255,.90);
+      font-weight: 650;
+    }
+    tbody tr:hover td{
+      background: rgba(255,255,255,.06);
+    }
+    .year{
+      font-variant-numeric: tabular-nums;
+      color: rgba(255,255,255,.92);
+      font-weight: 900;
+      width: 90px;
+    }
+
+    .medal{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      min-width: 160px;
+    }
+    .dot{
+      width: 10px;
+      height: 10px;
+      border-radius: 99px;
+      box-shadow: 0 8px 16px rgba(0,0,0,.25);
+      flex: 0 0 auto;
+    }
+    .dot.gold{background: var(--gold)}
+    .dot.silver{background: var(--silver)}
+    .dot.bronze{background: var(--bronze)}
+
+    .note{
+      margin: 10px 2px 0;
+      color: rgba(255,255,255,.70);
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1.35;
+    }
+
+    .mini-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 12px;
+      align-items:center;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.86);
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(255,255,255,.18);
+      padding: 10px 12px;
+      border-radius: 999px;
+      color: rgba(255,255,255,.92);
+      font-weight: 800;
+      font-size: 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+      opacity: 0;
+      pointer-events:none;
+      transition: opacity .22s ease, transform .22s ease;
+    }
+    .toast.show{
+      opacity: 1;
+      transform: translateX(-50%) translateY(-6px);
+    }
+
+    @media (max-width: 720px){
+      .hero{padding: 14px}
+      table{min-width: 560px}
+      .title h1{font-size:16px}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="title">
+        <h1>🏅 Medal Winners – Volleyball</h1>
+        <small>Clean podium lists. Tap Men / Women. Copy winners for your page.</small>
+      </div>
+
+      <!-- Change href to your real “International Volleyball Today” page -->
+      <a class="btn" href="international_volleyball_today.html">← Back</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="hero">
+      <p>
+        This page is made to stay readable and fast. Some sections are still <b>TBD</b> because I only added the winners you already provided.
+        You can paste more rows anytime (same format).
+      </p>
+      <div class="actions">
+        <button class="btn secondary" id="copyAllBtn">Copy ALL visible tables</button>
+      </div>
+    </div>
+
+    <!-- OLYMPICS -->
+    <section class="section" data-section="olympics">
+      <div class="section-head">
+        <div class="head-left">
+          <h2>Olympic Games (Indoor)</h2>
+          <div class="sub">Podiums (Gold / Silver / Bronze)</div>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Olympics Tabs">
+          <button class="tab active" data-tab="men" data-target="olympics">Men</button>
+          <button class="tab" data-tab="women" data-target="olympics">Women</button>
+        </div>
+      </div>
+
+      <div class="section-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>🥇 Gold</th>
+                <th>🥈 Silver</th>
+                <th>🥉 Bronze</th>
+              </tr>
+            </thead>
+
+            <tbody data-table="olympics-men">
+              <tr>
+                <td class="year">2024</td>
+                <td><span class="medal"><span class="dot gold"></span>France</span></td>
+                <td><span class="medal"><span class="dot silver"></span>Poland</span></td>
+                <td><span class="medal"><span class="dot bronze"></span>USA</span></td>
+              </tr>
+              <tr>
+                <td class="year">2020</td>
+                <td><span class="medal"><span class="dot gold"></span>France</span></td>
+                <td><span class="medal"><span class="dot silver"></span>ROC</span></td>
+                <td><span class="medal"><span class="dot bronze"></span>Argentina</span></td>
+              </tr>
+              <tr>
+                <td class="year">2016</td>
+                <td><span class="medal"><span class="dot gold"></span>Brazil</span></td>
+                <td><span class="medal"><span class="dot silver"></span>Italy</span></td>
+                <td><span class="medal"><span class="dot bronze"></span>USA</span></td>
+              </tr>
+              <tr>
+                <td class="year">2012</td>
+                <td><span class="medal"><span class="dot gold"></span>Russia</span></td>
+                <td><span class="medal"><span class="dot silver"></span>Brazil</span></td>
+                <td><span class="medal"><span class="dot bronze"></span>Italy</span></td>
+              </tr>
+            </tbody>
+
+            <tbody data-table="olympics-women" style="display:none">
+              <tr>
+                <td class="year">2024</td>
+                <td colspan="3">TBD (add women’s podiums here)</td>
+              </tr>
+              <tr>
+                <td class="year">2020</td>
+                <td colspan="3">TBD</td>
+              </tr>
+              <tr>
+                <td class="year">2016</td>
+                <td colspan="3">TBD</td>
+              </tr>
+              <tr>
+                <td class="year">2012</td>
+                <td colspan="3">TBD</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mini-actions">
+          <span class="pill">Tip: add more years anytime</span>
+          <button class="btn secondary" data-copy="olympics">Copy Olympics table</button>
+        </div>
+
+        <div class="note">If you want, I can later fill Women/2000+ once you provide the winners list (or you upload your data file).</div>
+      </div>
+    </section>
+
+    <!-- WORLDS -->
+    <section class="section" data-section="worlds">
+      <div class="section-head">
+        <div class="head-left">
+          <h2>FIVB World Championships (Indoor)</h2>
+          <div class="sub">Podiums (Gold / Silver / Bronze)</div>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Worlds Tabs">
+          <button class="tab active" data-tab="men" data-target="worlds">Men</button>
+          <button class="tab" data-tab="women" data-target="worlds">Women</button>
+        </div>
+      </div>
+
+      <div class="section-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>🥇 Gold</th>
+                <th>🥈 Silver</th>
+                <th>🥉 Bronze</th>
+              </tr>
+            </thead>
+
+            <tbody data-table="worlds-men">
+              <tr>
+                <td class="year">2022</td>
+                <td><span class="medal"><span class="dot gold"></span>Italy</span></td>
+                <td><span class="medal"><span class="dot silver"></span>Poland</span></td>
+                <td><span class="medal"><span class="dot bronze"></span>Brazil</span></td>
+              </tr>
+              <tr>
+                <td class="year">2018</td>
+                <td><span class="medal"><span class="dot gold"></span>Poland</span></td>
+                <td><span class="medal"><span class="dot silver"></span>Brazil</span></td>
+                <td><span class="medal"><span class="dot bronze"></span>USA</span></td>
+              </tr>
+              <tr>
+                <td class="year">2014</td>
+                <td><span class="medal"><span class="dot gold"></span>Poland</span></td>
+                <td><span class="medal"><span class="dot silver"></span>Brazil</span></td>
+                <td><span class="medal"><span class="dot bronze"></span>Germany</span></td>
+              </tr>
+              <tr>
+                <td class="year">2010</td>
+                <td><span class="medal"><span class="dot gold"></span>Brazil</span></td>
+                <td><span class="medal"><span class="dot silver"></span>Cuba</span></td>
+                <td><span class="medal"><span class="dot bronze"></span>Serbia</span></td>
+              </tr>
+            </tbody>
+
+            <tbody data-table="worlds-women" style="display:none">
+              <tr>
+                <td class="year">2022</td>
+                <td colspan="3">TBD (add women’s podiums here)</td>
+              </tr>
+              <tr>
+                <td class="year">2018</td>
+                <td colspan="3">TBD</td>
+              </tr>
+              <tr>
+                <td class="year">2014</td>
+                <td colspan="3">TBD</td>
+              </tr>
+              <tr>
+                <td class="year">2010</td>
+                <td colspan="3">TBD</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mini-actions">
+          <button class="btn secondary" data-copy="worlds">Copy Worlds table</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VNL -->
+    <section class="section" data-section="vnl">
+      <div class="section-head">
+        <div class="head-left">
+          <h2>Volleyball Nations League (VNL)</h2>
+          <div class="sub">Last 10 years (add your winners)</div>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="VNL Tabs">
+          <button class="tab active" data-tab="men" data-target="vnl">Men</button>
+          <button class="tab" data-tab="women" data-target="vnl">Women</button>
+        </div>
+      </div>
+
+      <div class="section-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>🥇 Gold</th>
+                <th>🥈 Silver</th>
+                <th>🥉 Bronze</th>
+              </tr>
+            </thead>
+
+            <tbody data-table="vnl-men">
+              <tr><td class="year">2024</td><td colspan="3">TBD (paste VNL men podiums here)</td></tr>
+              <tr><td class="year">2023</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2022</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2021</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2020</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2019</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2018</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2017</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2016</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2015</td><td colspan="3">TBD</td></tr>
+            </tbody>
+
+            <tbody data-table="vnl-women" style="display:none">
+              <tr><td class="year">2024</td><td colspan="3">TBD (paste VNL women podiums here)</td></tr>
+              <tr><td class="year">2023</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2022</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2021</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2020</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2019</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2018</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2017</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2016</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2015</td><td colspan="3">TBD</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mini-actions">
+          <button class="btn secondary" data-copy="vnl">Copy VNL table</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PARALYMPICS / PARA VOLLEY -->
+    <section class="section" data-section="para">
+      <div class="section-head">
+        <div class="head-left">
+          <h2>Paralympics – Sitting Volleyball</h2>
+          <div class="sub">Podiums (add Men / Women podiums)</div>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Para Tabs">
+          <button class="tab active" data-tab="men" data-target="para">Men</button>
+          <button class="tab" data-tab="women" data-target="para">Women</button>
+        </div>
+      </div>
+
+      <div class="section-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>🥇 Gold</th>
+                <th>🥈 Silver</th>
+                <th>🥉 Bronze</th>
+              </tr>
+            </thead>
+
+            <tbody data-table="para-men">
+              <tr><td class="year">2024</td><td colspan="3">TBD (paste Para men podiums here)</td></tr>
+              <tr><td class="year">2020</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2016</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2012</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2008</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2004</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2000</td><td colspan="3">TBD</td></tr>
+            </tbody>
+
+            <tbody data-table="para-women" style="display:none">
+              <tr><td class="year">2024</td><td colspan="3">TBD (paste Para women podiums here)</td></tr>
+              <tr><td class="year">2020</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2016</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2012</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2008</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2004</td><td colspan="3">TBD</td></tr>
+              <tr><td class="year">2000</td><td colspan="3">TBD</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mini-actions">
+          <button class="btn secondary" data-copy="para">Copy Para table</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="note" style="margin-top:14px;">
+      Want it even cleaner? I can also generate a version where each competition is its own subpage (olympics_medals.html, worlds_medals.html, etc.).
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copied ✅</div>
+
+  <script>
+    // Tabs logic
+    function setTab(sectionKey, tabKey){
+      const menBody = document.querySelector(`tbody[data-table="${sectionKey}-men"]`);
+      const womenBody = document.querySelector(`tbody[data-table="${sectionKey}-women"]`);
+      if(!menBody || !womenBody) return;
+
+      const showMen = (tabKey === "men");
+      menBody.style.display = showMen ? "" : "none";
+      womenBody.style.display = showMen ? "none" : "";
+
+      // Toggle active tab buttons
+      document.querySelectorAll(`.tab[data-target="${sectionKey}"]`).forEach(btn=>{
+        btn.classList.toggle("active", btn.dataset.tab === tabKey);
+      });
+    }
+
+    document.querySelectorAll(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        setTab(btn.dataset.target, btn.dataset.tab);
+      });
+    });
+
+    // Copy helpers
+    function toast(msg){
+      const el = document.getElementById("toast");
+      el.textContent = msg || "Copied ✅";
+      el.classList.add("show");
+      window.clearTimeout(el._t);
+      el._t = window.setTimeout(()=> el.classList.remove("show"), 1400);
+    }
+
+    function getVisibleTableText(sectionKey){
+      const menVisible = document.querySelector(`tbody[data-table="${sectionKey}-men"]`)?.style.display !== "none";
+      const activeBody = document.querySelector(`tbody[data-table="${sectionKey}-${menVisible ? "men":"women"}"]`);
+      const titleMap = {
+        olympics: "Olympic Games (Indoor)",
+        worlds: "FIVB World Championships (Indoor)",
+        vnl: "Volleyball Nations League (VNL)",
+        para: "Paralympics – Sitting Volleyball"
+      };
+
+      const mode = menVisible ? "Men" : "Women";
+      let out = `${titleMap[sectionKey] || sectionKey} – ${mode}\n`;
+      out += "Year | Gold | Silver | Bronze\n";
+
+      if(!activeBody) return out + "(no data)\n";
+
+      [...activeBody.querySelectorAll("tr")].forEach(tr=>{
+        const tds = [...tr.querySelectorAll("td")];
+        if(tds.length === 0) return;
+        const year = tds[0].innerText.trim().replace(/\s+/g," ");
+        if(tds.length === 2 && tds[1].colSpan === 3){
+          out += `${year} | TBD | TBD | TBD\n`;
+          return;
+        }
+        const gold = tds[1]?.innerText.trim().replace(/\s+/g," ") || "";
+        const silver = tds[2]?.innerText.trim().replace(/\s+/g," ") || "";
+        const bronze = tds[3]?.innerText.trim().replace(/\s+/g," ") || "";
+        out += `${year} | ${gold} | ${silver} | ${bronze}\n`;
+      });
+
+      return out + "\n";
+    }
+
+    async function copyText(text){
+      try{
+        await navigator.clipboard.writeText(text);
+        toast("Copied ✅");
+      }catch(e){
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        toast("Copied ✅");
+      }
+    }
+
+    // Copy per section
+    document.querySelectorAll("[data-copy]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const key = btn.dataset.copy;
+        copyText(getVisibleTableText(key));
+      });
+    });
+
+    // Copy all visible
+    document.getElementById("copyAllBtn").addEventListener("click", ()=>{
+      const keys = ["olympics","worlds","vnl","para"];
+      const text = keys.map(getVisibleTableText).join("");
+      copyText(text);
+    });
+
+    // Initialize (all men active by default)
+    ["olympics","worlds","vnl","para"].forEach(k=>setTab(k,"men"));
+  </script>
+</body>
+</html>

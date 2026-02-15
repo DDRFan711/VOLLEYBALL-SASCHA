@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rules & Rule development</title>
+
+<style>
+  html,body{
+    margin:0;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  }
+
+  .stage{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+  }
+
+  /* Background (same as history) */
+  .bg{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    transform:scale(1.02);
+    transition:filter 1.2s ease, opacity 1.2s ease;
+    user-select:none; pointer-events:none;
+    opacity:1;
+    z-index:1;
+  }
+  .veil{
+    position:absolute; inset:0;
+    background:radial-gradient(circle at 50% 35%, rgba(0,0,0,.00), rgba(0,0,0,.22));
+    opacity:0;
+    transition:opacity 1.2s ease;
+    pointer-events:none;
+    z-index:2;
+  }
+
+  /* Title (same as history) */
+  .titleWrap{
+    position:fixed;
+    top:18px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:2147483000;
+    width:min(1100px, 94vw);
+    display:flex;
+    justify-content:center;
+    pointer-events:none;
+  }
+  .title{
+    margin:0;
+    padding:10px 18px;
+    border-radius:999px;
+    background:rgba(0,0,0,.22);
+    border:1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(10px);
+    box-shadow:0 18px 46px rgba(0,0,0,.25);
+    font-family: "Segoe Script","Comic Sans MS","Brush Script MT","Trebuchet MS",system-ui,sans-serif;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    font-size:clamp(18px, 2.5vw, 34px);
+  }
+  .title span{
+    background: linear-gradient(90deg, #ffe600 0%, #ff7a00 35%, #ff2bd6 70%, #7cffef 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:
+      0 0 10px rgba(255,230,0,.35),
+      0 0 18px rgba(255,50,214,.25),
+      0 10px 30px rgba(0,0,0,.35);
+  }
+  .caret{
+    display:inline-block;
+    width:10px;
+    margin-left:6px;
+    border-right:3px solid rgba(255,230,0,.85);
+    transform: translateY(2px);
+    animation: blink 800ms steps(1) infinite;
+  }
+  @keyframes blink{ 50%{opacity:0;} }
+
+  /* Grid */
+  .grid{
+    position:absolute;
+    inset:0;
+    z-index:5;
+    padding:110px 4vw 28px 4vw;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap:18px;
+    align-items:stretch;
+  }
+
+  /* Cards */
+  .card{
+    position:relative;
+    border-radius:22px;
+    overflow:hidden;
+    background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
+    border:1px solid rgba(255,255,255,.18);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 18px 54px rgba(0,0,0,.32);
+
+    opacity:0;
+    transform: translateY(18px) scale(.98);
+    transition: opacity 700ms ease, transform 700ms cubic-bezier(.2,.9,.2,1);
+  }
+  .card.show{
+    opacity:1;
+    transform: translateY(0) scale(1);
+  }
+  .card::before{
+    content:"";
+    position:absolute; inset:-2px;
+    border-radius:24px;
+    background: conic-gradient(from 180deg,
+      rgba(255,210,0,.85),
+      rgba(0,190,255,.80),
+      rgba(255,60,210,.70),
+      rgba(255,210,0,.85)
+    );
+    filter: blur(16px);
+    opacity:.40;
+    z-index:0;
+  }
+
+  .cardInner{
+    position:relative;
+    z-index:1;
+    height:100%;
+    padding:14px 14px 12px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    width:fit-content;
+    padding:6px 12px;
+    border-radius:999px;
+    background:linear-gradient(90deg,#ffe600,#ff7a00,#ff2bd6,#7cffef);
+    color:#2a0b3f;
+    text-shadow:0 0 6px rgba(255,255,255,.35);
+    font-weight:900;
+    font-size:12.5px;
+    letter-spacing:.35px;
+    box-shadow:0 0 14px rgba(255,122,0,.45);
+  }
+
+  /* Text NOT white */
+  .text{
+    color:#1b1033;
+    font-weight:800;
+    font-size:13px;
+    line-height:1.5;
+    text-shadow: 0 1px 0 rgba(255,255,255,.22);
+  }
+  .text ul{ margin:0; padding-left:18px; }
+  .text li{ margin:6px 0; }
+
+  /* Frames */
+  .imgFrame{
+    flex:1;
+    min-height:220px;
+    border-radius:16px;
+    border:1px solid rgba(0,0,0,.08);
+    box-shadow: 0 14px 34px rgba(0,0,0,.18);
+    padding:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+
+  /* Glass background (same look as Player positions) */
+  .imgFrame.clear{
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.20);
+  }
+  .imgFrame.glass{
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.20);
+  }
+
+  .imgFrame img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+    filter: saturate(1.25) contrast(1.10) brightness(1.03);
+  }
+
+  /* Player overlay */
+  .posWrap{
+    position:relative;
+    width:100%;
+    height:100%;
+  }
+  .posBase{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+  }
+
+  /* ==========================================
+     Players (bigger + rotated 90° left)
+     ========================================== */
+  .player{
+    position:absolute;
+    width:clamp(22px, 2.4vw, 44px); /* bigger players */
+    aspect-ratio: 1 / 1;
+    transform: translate(-50%, -85%);
+    transform-origin: 50% 100%;
+    cursor:pointer;
+    pointer-events:auto;
+    z-index: 5;
+    filter: drop-shadow(0 10px 10px rgba(0,0,0,.28));
+  }
+
+  .player img{
+    width:100%;
+    height:100%;
+    display:block;
+    user-select:none;
+    -webkit-user-drag:none;
+
+    /* rotate player 90° to the left */
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+  }
+
+  .player .label{
+    position:absolute;
+    left:50%;
+    top:120%;
+    transform:translateX(-50%);
+    white-space:nowrap;
+    font-size:10.5px;
+    font-weight:900;
+    padding:4px 8px;
+    border-radius:999px;
+    background:rgba(10,20,40,.82);
+    color:#fff;
+    opacity:0;
+    pointer-events:none;
+    transition: opacity .15s ease, transform .15s ease;
+  }
+  .player:hover .label{
+    opacity:1;
+    transform:translateX(-50%) translateY(2px);
+  }
+
+  @keyframes hoverJump{
+    0%   { transform: translate(-50%, -85%) translateY(0) scale(1); }
+    25%  { transform: translate(-50%, -85%) translateY(-34px) scale(1.10); }
+    55%  { transform: translate(-50%, -85%) translateY(-34px) scale(1.10); }
+    100% { transform: translate(-50%, -85%) translateY(0) scale(1); }
+  }
+  .player:hover{
+    animation: hoverJump .95s ease-out;
+    filter: drop-shadow(0 16px 14px rgba(0,0,0,.35));
+  }
+
+  /* Reveal */
+  .stage.reveal .bg{
+    filter: blur(2px) saturate(.92) contrast(.98);
+    opacity:.78;
+  }
+  .stage.reveal .veil{ opacity:1; }
+
+  .backBtn{
+    position:fixed;
+    right:20px;
+    top:20px;
+    z-index:10000;
+    padding:10px 15px;
+    background:#ffcc00;
+    color:#000;
+    font-weight:bold;
+    text-decoration:none;
+    border-radius:6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  @media (max-width: 980px){
+    body{ overflow:auto; }
+    .stage{ height:auto; min-height:100vh; overflow:visible; }
+    .grid{
+      position:relative;
+      padding:110px 4vw 28px 4vw;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+    }
+  }
+</style>
+</head>
+
+<body>
+<div class="stage" id="stage">
+  <img class="bg" src="history-bg.png" alt="bg">
+  <div class="veil"></div>
+
+  <div class="titleWrap">
+    <div class="title">
+      <span id="titleText"></span><span class="caret" id="caret"></span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- 1) Court dimensions (glass background like players) -->
+    <section class="card" id="c1">
+      <div class="cardInner">
+        <div class="badge">Court dimensions 🏐</div>
+        <div class="imgFrame glass">
+          <img id="courtImg" src="dimensions.png" alt="Court dimensions">
+        </div>
+      </div>
+    </section>
+
+    <!-- 2) Rule development -->
+    <section class="card" id="c2">
+      <div class="cardInner">
+        <div class="badge">Rule development ⏳</div>
+        <div class="text" style="overflow:auto; padding-right:6px;">
+          <ul>
+            <li><b>1917</b> - the game changed from 21 to 15 points</li>
+            <li><b>1920</b> – max 3 hits per side introduced</li>
+            <li><b>1947</b> – establishment of the Federation Internationale de Volleyball, founded by 14 members, became today with 222 members the biggest sporting organization in the world</li>
+            <li><b>1960</b> - new techniques introduced, the soft spike (dink), the forearm pass (bump), blocking across the net, and defensive diving and rolling.</li>
+            <li><b>1980</b> – Implementation Libero, not allowed to block or serve</li>
+            <li><b>1995</b> – Touching the ball with the foot allowed, not serving with the foot</li>
+            <li><b>1999</b> – Implementation rally point</li>
+            <li><b>2009</b> – touching the net no fault, if no influence on the game</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3) Player positions -->
+    <section class="card" id="c3">
+      <div class="cardInner">
+        <div class="badge">Player positions 👥</div>
+
+        <div class="imgFrame clear">
+          <div class="posWrap">
+            <img class="posBase" id="posImg" src="player_positions_empty.png" alt="Player positions">
+
+            <!--
+              ✅ Moved SOUTH-WEST (left + down) so they sit in the right half orange area.
+              If you want even more SW: subtract ~1-2% left and add ~1% top.
+            -->
+
+            <!-- FRONT ROW (near net) -->
+            <div class="player" style="left:47%; top:62%;">
+              <img src="jumper.png" alt="Opposite">
+              <div class="label">Opposite (front left)</div>
+            </div>
+
+            <div class="player" style="left:50%; top:55%;">
+              <img src="jumper.png" alt="Middle blocker/hitter">
+              <div class="label">Middle blocker/hitter (front middle)</div>
+            </div>
+
+            <div class="player" style="left:54%; top:51%;">
+              <img src="jumper.png" alt="Outside hitter">
+              <div class="label">Outside hitter (front right)</div>
+            </div>
+
+            <!-- BACK ROW -->
+            <div class="player" style="left:58%; top:75%;">
+              <img src="jumper.png" alt="Outside hitter">
+              <div class="label">Outside hitter (back left)</div>
+            </div>
+
+            <div class="player" style="left:60%; top:64%;">
+              <img src="jumper.png" alt="Libero">
+              <div class="label">Libero (back middle)</div>
+            </div>
+
+            <div class="player" style="left:65%; top:56%;">
+              <img src="jumper.png" alt="Setter">
+              <div class="label">Setter (back right)</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4) Rules -->
+    <section class="card" id="c4">
+      <div class="cardInner">
+        <div class="badge">Rules ✅</div>
+        <div class="text" style="overflow:auto; padding-right:6px;">
+          <ul>
+            <li>The winner of each rally is getting a point, the winner also serves for the next point</li>
+            <li>One match has 5 sets, the team that wins 3 sets is the winner of the game. The first 4 sets are played to 25 points, the fifth set to 15 points. There needs to be a 2-point difference to win the set.</li>
+            <li>Serving has to be done behind the base line, the ball is allowed to touch the net.</li>
+            <li>The ball has to be returned after max 3 contacts; a block touch is not counted as a touch. Players are not allowed to catch or hold the ball. A player can not play the ball twice in a raw.</li>
+            <li>There are 6 players on the court, who have to rotate one position after each point. After serving players can move around.</li>
+            <li>Detailed official volleyball rules can be studied at the FIVB (volleyball Federation) Webpage</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<a class="backBtn" href="index.html">← Back to coverpage</a>
+
+<script>
+  const stage     = document.getElementById("stage");
+  const titleText = document.getElementById("titleText");
+  const caret     = document.getElementById("caret");
+
+  const TITLE = "RULES & RULE DEVELOPMENT";
+  const TYPE_SPEED_MS = 38;
+
+  const SHOW_BG_ONLY_MS = 650;
+  const REVEAL_MS = 1550;
+
+  // 4 blocks one after another, 2 sec gap
+  const CARD_START_MS = 2400;
+  const CARD_GAP_MS   = 2000;
+
+  function typeTitle(){
+    let i=0;
+    (function tick(){
+      titleText.textContent = TITLE.slice(0,i++);
+      if(i <= TITLE.length) setTimeout(tick, TYPE_SPEED_MS);
+      else caret.style.display = "none";
+    })();
+  }
+
+  function revealCards(){
+    const ids = ["c1","c2","c3","c4"];
+    ids.forEach((id, idx)=>{
+      setTimeout(()=>document.getElementById(id).classList.add("show"), CARD_START_MS + idx*CARD_GAP_MS);
+    });
+  }
+
+  // safety fallback if someone moves the files back into assets/images later
+  function attachFallback(imgEl, candidates){
+    let i = 0;
+    imgEl.addEventListener("error", ()=>{
+      i++;
+      if(i < candidates.length) imgEl.src = candidates[i];
+    });
+    if (candidates[0] !== imgEl.getAttribute("src")) imgEl.src = candidates[0];
+  }
+
+  window.addEventListener("load", ()=>{
+    attachFallback(document.getElementById("courtImg"), [
+      "dimensions.png",
+      "assets/images/Field_dimensions.png"
+    ]);
+
+    attachFallback(document.getElementById("posImg"), [
+      "player_positions_empty.png",
+      "player_positions.png",
+      "assets/images/Player_position.png"
+    ]);
+
+    setTimeout(typeTitle, SHOW_BG_ONLY_MS);
+    setTimeout(()=>stage.classList.add("reveal"), REVEAL_MS);
+    revealCards();
+  });
+</script>
+</body>
+</html>

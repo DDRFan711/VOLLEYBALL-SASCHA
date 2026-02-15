@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Beach Stars – Women</title>
+
+<style>
+  :root{ --panelH: 410px; }
+
+  *{box-sizing:border-box}
+  html,body{
+    margin:0;padding:0;height:100%;
+    font-family:"Segoe UI",Arial,sans-serif;
+    color:#fff;
+    overflow:hidden;
+  }
+
+  body{
+    background:
+      linear-gradient(rgba(6,10,18,.40), rgba(6,10,18,.22)),
+      url("assets/images/history-bg.png") center/cover no-repeat fixed;
+  }
+
+  .dim{
+    position:fixed;inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.70));
+    opacity:0;transition:opacity 900ms ease;
+    pointer-events:none;z-index:0;
+  }
+  .dim.on{opacity:1;}
+
+  .backBtn{
+    position:fixed; left:14px; top:14px; z-index:50;
+    padding:9px 14px; border-radius:999px; border:none; cursor:pointer;
+    background:linear-gradient(135deg,#ffd200,#ff7a18);
+    color:#102a56; font-weight:900;
+    box-shadow:0 14px 30px rgba(0,0,0,.35);
+  }
+
+  .page{
+    position:relative;z-index:1;
+    max-width:1200px;margin:0 auto;
+    padding:14px 14px 12px;
+    height:100%;
+  }
+
+  .hero h1{
+    margin:0 0 6px;
+    font-size:clamp(30px,4vw,54px);
+    background:linear-gradient(90deg,#ff4bd6,#ffd200,#6ee7ff);
+    -webkit-background-clip:text;
+    color:transparent;
+    opacity:0;transform:translateY(10px);
+    transition:opacity 800ms ease, transform 800ms ease;
+  }
+  .hero.show h1{opacity:1;transform:translateY(0);}
+
+  .wrap{
+    height:calc(100% - 58px);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    min-height:0;
+  }
+
+  .row3{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap:10px;
+    opacity:0;transform:translateY(14px);
+    transition:opacity 650ms ease, transform 650ms ease;
+  }
+  .row3.show{opacity:1;transform:translateY(0);}
+
+  .imgCard{
+    border-radius:16px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(10,14,20,.20);
+    height:200px;
+  }
+  .imgCardWrap{position:relative;width:100%;height:100%;}
+  .imgCard img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:50% 20%;
+    display:block;
+  }
+  .cap{
+    position:absolute;
+    left:12px;
+    bottom:10px;
+    right:12px;
+    font-weight:900;
+    font-size:15px;
+    text-shadow:0 10px 22px rgba(0,0,0,.55);
+  }
+
+  .row2{
+    display:grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap:10px;
+    align-items:start;
+    opacity:0;transform:translateY(14px);
+    transition:opacity 650ms ease, transform 650ms ease;
+  }
+  .row2.show{opacity:1;transform:translateY(0);}
+
+  .videoBox{
+    position:relative;
+    height:var(--panelH);
+    border-radius:18px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(0,0,0,.25);
+    box-shadow:0 20px 50px rgba(0,0,0,.45);
+  }
+  .videoBox img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:50% 25%;
+    filter:brightness(.88);
+    display:block;
+  }
+  .ytBtn{
+    position:absolute;
+    left:50%;
+    bottom:14px;
+    transform:translateX(-50%);
+    padding:10px 20px;
+    border-radius:999px;
+    border:none;
+    cursor:pointer;
+    font-weight:950;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    background:linear-gradient(135deg,#ffd200,#ff7a18);
+    color:#102a56;
+    box-shadow:0 14px 30px rgba(0,0,0,.45);
+    z-index:2;
+  }
+  .ytBtn:hover{transform:translateX(-50%) scale(1.06);}
+
+  .tableBox{
+    height:var(--panelH);
+    border-radius:18px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(10,14,20,.20);
+    display:flex;
+    flex-direction:column;
+  }
+  .tableHead{
+    padding:10px 14px 8px;
+    font-weight:1000;
+    font-size:18px;
+    color:#ffd200;
+  }
+  .tableBody{
+    padding:0 8px 10px;
+    overflow:hidden;
+    flex:1;
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+    font-size:12px;
+    line-height:1.15;
+  }
+  thead th{
+    text-align:left;
+    padding:6px 8px;
+    color:#ffd200;
+    border-bottom:2px solid rgba(255,210,0,.85);
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:6px 8px;
+    border-bottom:1px solid rgba(255,255,255,.14);
+    vertical-align:top;
+  }
+  tbody tr:hover{background:rgba(255,210,0,.08);}
+  .money{font-weight:900;white-space:nowrap;}
+
+  @media(max-width:980px){
+    html,body{overflow:auto;}
+    .wrap{height:auto;}
+    .row3{grid-template-columns:1fr;}
+    .row2{grid-template-columns:1fr;}
+    :root{ --panelH: 420px; }
+    .tableBody{overflow:auto;}
+  }
+</style>
+</head>
+
+<body>
+<div class="dim" id="dim"></div>
+<button class="backBtn" onclick="location.href='beach.html'">Back</button>
+
+<div class="page">
+  <div class="hero" id="hero"><h1>Stars women</h1></div>
+
+  <div class="wrap">
+
+    <div class="row3" id="row3">
+      <div class="imgCard"><div class="imgCardWrap">
+        <img src="assets/images/Beachvolleyball/1.jpg" alt="">
+        <div class="cap">Rebecca Cavalcanti / Carol Salgado, Brazil</div>
+      </div></div>
+
+      <div class="imgCard"><div class="imgCardWrap">
+        <img src="assets/images/Beachvolleyball/4.jpg" alt="">
+        <div class="cap">Thamela Coradello / Victoria Lopes, Brazil</div>
+      </div></div>
+
+      <div class="imgCard"><div class="imgCardWrap">
+        <img src="assets/images/Beachvolleyball/6.jpg" alt="">
+        <div class="cap">Taryn Brasher / Kristen Nuss, United States</div>
+      </div></div>
+    </div>
+
+    <div class="row2" id="row2">
+      <div class="videoBox">
+        <img src="https://img.youtube.com/vi/KxllkdTTs1M/hqdefault.jpg" alt="Women highlights">
+        <button class="ytBtn"
+          onclick="window.open('https://www.youtube.com/watch?v=KxllkdTTs1M','_blank')">
+          ▶ OPEN ON YOUTUBE
+        </button>
+      </div>
+
+      <div class="tableBox">
+        <div class="tableHead">Women’s Winnings 2025</div>
+        <div class="tableBody">
+          <table>
+            <thead>
+              <tr><th>Rank</th><th>Team</th><th>Winnings</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>Rebecca Cavalcanti / Carol Salgado, Brazil</td><td class="money">$237,750</td></tr>
+              <tr><td>2</td><td>Thamela Coradello / Victoria Lopes, Brazil</td><td class="money">$224,500</td></tr>
+              <tr><td>3</td><td>Taryn Brasher / Kristen Nuss, United States</td><td class="money">$207,000</td></tr>
+              <tr><td>4</td><td>Tina Graudina / Anastasija Samoilova, Latvia</td><td class="money">$170,520</td></tr>
+              <tr><td>5</td><td>Svenja Muller / Cinja Tillmann, Germany</td><td class="money">$124,500</td></tr>
+              <tr><td>6</td><td>Kelly Cheng / Molly Shaw, United States</td><td class="money">$123,000</td></tr>
+              <tr><td>7</td><td>Valentina Gottardi / Reka Orsi Toth, Italy</td><td class="money">$121,000</td></tr>
+              <tr><td>8</td><td>Terese Cannon / Megan Kraft, United States</td><td class="money">$116,000</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('hero').classList.add('show');
+    document.getElementById('dim').classList.add('on');
+    document.getElementById('row3').classList.add('show');
+    document.getElementById('row2').classList.add('show');
+  });
+</script>
+<script src="common.js?v=1"></script>
+</body>
+</html>
+

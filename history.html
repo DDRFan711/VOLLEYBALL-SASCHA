@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Volleyball History – Key Milestones</title>
+
+<style>
+  html,body{
+    margin:0;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  }
+
+  .stage{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+  }
+
+  /* Background */
+  .bg{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    transform:scale(1.02);
+    transition:filter 1.2s ease, opacity 1.2s ease;
+    user-select:none; pointer-events:none;
+    opacity:1;
+    z-index:1;
+  }
+
+  .veil{
+    position:absolute; inset:0;
+    background:radial-gradient(circle at 50% 35%, rgba(0,0,0,.00), rgba(0,0,0,.18));
+    opacity:0;
+    transition:opacity 1.2s ease;
+    pointer-events:none;
+    z-index:2;
+  }
+
+  /* Title */
+  .titleWrap{
+    position:fixed;
+    top:18px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:2147483000;
+    width:min(1100px, 94vw);
+    display:flex;
+    justify-content:center;
+    pointer-events:none;
+  }
+
+  .title{
+    margin:0;
+    padding:10px 18px;
+    border-radius:999px;
+    background:rgba(0,0,0,.22);
+    border:1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(10px);
+    box-shadow:0 18px 46px rgba(0,0,0,.25);
+    font-family: "Segoe Script","Comic Sans MS","Brush Script MT","Trebuchet MS",system-ui,sans-serif;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    font-size:clamp(18px, 2.5vw, 34px);
+  }
+
+  .title span{
+    background: linear-gradient(90deg, #ffe600 0%, #ff7a00 35%, #ff2bd6 70%, #7cffef 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:
+      0 0 10px rgba(255,230,0,.35),
+      0 0 18px rgba(255,50,214,.25),
+      0 10px 30px rgba(0,0,0,.35);
+  }
+
+  .caret{
+    display:inline-block;
+    width:10px;
+    margin-left:6px;
+    border-right:3px solid rgba(255,230,0,.85);
+    transform: translateY(2px);
+    animation: blink 800ms steps(1) infinite;
+  }
+  @keyframes blink{ 50%{opacity:0;} }
+
+  /* Content (chart pushed to right) */
+  .content{
+    position:absolute;
+    inset:0;
+    display:flex;
+
+    align-items:flex-start;    /* move UP */
+    justify-content:flex-end;
+
+    padding-top:90px;          /* fine vertical tuning */
+    padding-right:10vw;        /* move LEFT */
+    padding-left:22vw;
+
+    z-index:10;
+  }
+
+  .card{
+    width:min(900px, 62vw);
+    opacity:0;
+    transform: translate(80px, 60px) scale(.97);
+    transition: opacity 900ms ease, transform 900ms cubic-bezier(.2,.9,.2,1);
+    position:relative;
+  }
+
+  .card-inner{
+    border-radius: 22px;
+    background: rgba(255,255,255,0.96); /* ✅ fixed (no double )) */
+    backdrop-filter: blur(8px);
+    box-shadow: 0 22px 60px rgba(0,0,0,.35);
+    border: 1px solid rgba(255,255,255,.14);
+    position:relative;
+    overflow:visible;
+  }
+
+  /* ✅ IMPORTANT: disable fog layer (this was making chart look transparent) */
+  .card-inner::before{
+    display:none;
+  }
+
+  .chart-wrap{
+    position:relative;
+    z-index:5;
+    padding:16px;
+    background:#ffffff;         /* ✅ solid white plate */
+    border-radius:18px;
+    overflow:hidden;            /* ✅ clean rounded corners */
+  }
+
+  .chart-img{
+    width:100%;
+    height:auto;
+    display:block;
+    border-radius:16px;
+    box-shadow:0 18px 42px rgba(0,0,0,.28);
+    opacity:1;
+    filter:none;                /* ✅ avoid “washed” look */
+    background:#ffffff;
+  }
+
+  /* Bubble layer */
+  #bubbleLayer{
+    position:fixed;
+    inset:0;
+    z-index:2147483647;
+    pointer-events:none;
+  }
+
+  /* same frame size */
+  .bubble{
+    position:fixed;
+    width: 460px;
+    height: 112px;
+    padding: 8px 10px;
+    border-radius: 14px;
+    box-sizing: border-box;
+
+    background: linear-gradient(135deg,
+      rgba(255,230,0,.25),
+      rgba(255,45,214,.20),
+      rgba(124,255,239,.18)
+    );
+    border: 1px solid rgba(255,255,255,.25);
+    color: rgba(255,255,255,.98);
+
+    font-family: "Segoe UI", system-ui, Arial, sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 1.3;
+
+    box-shadow:
+      0 10px 22px rgba(0,0,0,.25),
+      0 0 18px rgba(255,45,214,.14);
+
+    backdrop-filter: blur(10px);
+
+    opacity:0;
+    transform: translateY(8px) scale(.97);
+    transition: opacity 520ms ease, transform 520ms cubic-bezier(.2,.9,.2,1);
+  }
+  .bubble.show{ opacity:1; transform: translateY(0) scale(1); }
+
+  /* 1993 smaller */
+  .bubble.short{ height: 86px; }
+
+  .bubble::after{
+    content:"";
+    position:absolute;
+    width:12px; height:12px;
+    background: rgba(20,20,20,.22);
+    border-right: 1px solid rgba(255,255,255,.18);
+    border-bottom: 1px solid rgba(255,255,255,.18);
+    transform: rotate(45deg);
+    bottom:-6px;
+    left: 20px;
+    border-radius: 2px;
+  }
+
+  .badge{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:999px;
+    background:linear-gradient(90deg,#ffe600,#ff7a00,#ff2bd6,#7cffef);
+    color:#2a0b3f;
+    text-shadow:0 0 6px rgba(255,255,255,.35);
+    font-weight:900;
+    font-size:12px;
+    letter-spacing:.35px;
+    box-shadow:0 0 14px rgba(255,122,0,.45);
+    margin-bottom:6px;
+  }
+
+  .bubbleBody{
+    max-height: 64px;
+    overflow:hidden; /* no scrollbars */
+    white-space:pre-wrap;
+  }
+  .bubble.short .bubbleBody{ max-height: 40px; }
+
+  /* Reveal */
+  .stage.reveal .bg{ filter: blur(2px) saturate(.95) contrast(.98); opacity:.78; }
+  .stage.reveal .veil{ opacity:1; }
+  .stage.reveal .card{
+    opacity:1;
+    transform: translate(80px, 60px) scale(1); /* ✅ keep same position */
+  }
+
+  /* Back button */
+  .backBtn{
+    position:fixed;
+    right:20px;
+    top:20px;
+    z-index:10000;
+    padding:10px 15px;
+    background:#ffcc00;
+    color:#000;
+    font-weight:bold;
+    text-decoration:none;
+    border-radius:5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+</style>
+</head>
+
+<body>
+<div class="stage" id="stage">
+  <img class="bg" src="assets/images/history-bg.png" alt="bg">
+  <div class="veil"></div>
+
+  <div class="titleWrap">
+    <div class="title">
+      <span id="titleText"></span><span class="caret" id="caret"></span>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="card" id="card">
+      <div class="card-inner">
+        <div class="chart-wrap" id="chartWrap">
+          <img class="chart-img" id="chartImg" src="assets/images/history-chart.png" alt="chart">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="bubbleLayer"></div>
+<a class="backBtn" href="index.html">← Back to coverpage</a>
+
+<script>
+  const stage       = document.getElementById("stage");
+  const titleText   = document.getElementById("titleText");
+  const caret       = document.getElementById("caret");
+  const chartImg    = document.getElementById("chartImg");
+  const bubbleLayer = document.getElementById("bubbleLayer");
+
+  const SHOW_BG_ONLY_MS = 650;
+  const TYPE_SPEED_MS   = 38;
+  const REVEAL_CHART_MS = 1550;
+
+  const BUBBLE_START_MS   = 2400;
+  const BUBBLE_STAGGER_MS = 1000;
+
+  const TITLE = "VOLLEYBALL HISTORY – KEY MILESTONES";
+  function typeTitle(){
+    let i=0;
+    (function tick(){
+      titleText.textContent = TITLE.slice(0,i++);
+      if(i <= TITLE.length) setTimeout(tick, TYPE_SPEED_MS);
+      else caret.style.display = "none";
+    })();
+  }
+
+  function escapeHtml(str){
+    return (str || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
+  }
+
+  const milestones = [
+    { key:"m1895", text:
+`1895 – Volleyball is born 🏐
+William G. Morgan created a new game with less body contact than basketball.
+First name: “mintonette” — then people noticed the constant volleying: VOLLEYBALL.`},
+    { key:"m1913", text:
+`1900–1920: Going global 🌍
+Volleyball moved from the US to Canada, Cuba, Brazil, Puerto Rico and Uruguay.
+After the Far Eastern Games (1913) it blew up in the Philippines.`},
+    { key:"m1949", text:
+`1949–1964: World stage unlocked 🏆
+First World Championships: 1949.
+By 1951 there were already 50 Mio players worldwide.
+Olympic sport since Tokyo 1964.`},
+    { key:"m1980", text:
+`1980s: The BOOM era 📺🔥
+More TV coverage + Olympic hype + Beach Volleyball = massive growth worldwide.`},
+    { key:"m1993", short:true, text:
+`1993: Beach hits the Olympics 🏖️🥇
+Beach Volleyball became an Olympic discipline. Spotlight on!`},
+    { key:"m2025", text:
+`2025: Numbers are wild 📈
+Estimated 800 Mio players globally.
+Only football has more: ~1,200 Mio players.`},
+    { key:"rules", isLink:true, href:"rules.html", text:
+`Rules & Rule development 🧠⚡
+Tap here for the rule story — how volleyball became so fast and tactical.`}
+  ];
+
+  function getFixedPos(m){
+    const leftCol = 30;
+    const topStart = 84;
+
+    const H = 112;
+    const Hs = 86;
+    const gap = 0;
+
+    const y1895 = topStart;
+    const y1913 = y1895 + H + gap;
+    const y1949 = y1913 + H + gap;
+    const y1980 = y1949 + H + gap;
+    const y1993 = y1980 + H + gap;
+    const y2025 = y1993 + Hs + gap;
+
+    if(m.key === "m1895") return { left: leftCol, top: y1895 };
+    if(m.key === "m1913") return { left: leftCol, top: y1913 };
+    if(m.key === "m1949") return { left: leftCol, top: y1949 };
+    if(m.key === "m1980") return { left: leftCol, top: y1980 };
+    if(m.key === "m1993") return { left: leftCol, top: y1993 };
+    if(m.key === "m2025") return { left: leftCol, top: y2025 };
+    if(m.key === "rules") return { left: leftCol + 480, top: y2025 };
+
+    return { left: leftCol, top: topStart };
+  }
+
+  function addMilestone(m, idx){
+    const bub = document.createElement("div");
+    bub.className = "bubble";
+    if(m.short) bub.classList.add("short");
+
+    const lines = (m.text || "").split("\n");
+    const firstLine = (lines[0] || "").trim();
+    const restText  = lines.slice(1).join("\n").trim();
+
+    bub.innerHTML = `
+      <div class="badge">${escapeHtml(firstLine)}</div>
+      <div class="bubbleBody">${escapeHtml(restText)}</div>
+    `;
+
+    if(m.isLink && m.href){
+      bub.style.pointerEvents = "auto";
+      bub.style.cursor = "pointer";
+      bub.addEventListener("click", ()=>{ window.location.href = m.href; });
+    }
+
+    const pos = getFixedPos(m);
+    bub.style.left = pos.left + "px";
+    bub.style.top  = pos.top + "px";
+
+    bubbleLayer.appendChild(bub);
+    setTimeout(()=>bub.classList.add("show"), BUBBLE_START_MS + idx*BUBBLE_STAGGER_MS);
+  }
+
+  function buildMilestones(){
+    bubbleLayer.innerHTML = "";
+    milestones.forEach(addMilestone);
+  }
+
+  window.addEventListener("load", ()=>{
+    setTimeout(typeTitle, SHOW_BG_ONLY_MS);
+    setTimeout(()=>stage.classList.add("reveal"), REVEAL_CHART_MS);
+
+    chartImg.addEventListener("load", buildMilestones, {once:true});
+    setTimeout(buildMilestones, BUBBLE_START_MS);
+  });
+
+  window.addEventListener("resize", buildMilestones);
+</script>
+
+<script src="common.js" defer></script>
+</body>
+</html>
+
+

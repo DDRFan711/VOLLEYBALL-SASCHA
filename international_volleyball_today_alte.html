@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>International Volleyball Today</title>
+
+<style>
+  html,body{
+    margin:0;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif; 
+  }
+
+  .phLabel{ display:none !important; }
+
+  .ph .note{ display:none !important; }
+
+  .ph .fallback{ display:none !important; }
+
+
+  .stage{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+  }
+
+  /* ✅ SAME background system as HISTORY */
+  .bg{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    transform:scale(1.02);
+    transition:filter 1.2s ease, opacity 1.2s ease;
+    user-select:none; pointer-events:none;
+    opacity:1;
+    z-index:1;
+  }
+  .veil{
+    position:absolute; inset:0;
+    background:radial-gradient(circle at 50% 35%, rgba(0,0,0,0), rgba(0,0,0,.18));
+    opacity:0;
+    transition:opacity 1.2s ease;
+    pointer-events:none;
+    z-index:2;
+  }
+
+  /* ✅ SAME title header as HISTORY */
+  .titleWrap{
+    position:fixed;
+    top:18px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:2147483000;
+    width:min(1100px, 94vw);
+    display:flex;
+    justify-content:center;
+    pointer-events:none;
+  }
+  .title{
+    margin:0;
+    padding:10px 18px;
+    border-radius:999px;
+    background:rgba(0,0,0,.22);
+    border:1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(10px);
+    box-shadow:0 18px 46px rgba(0,0,0,.25);
+    font-family: "Segoe Script","Comic Sans MS","Brush Script MT","Trebuchet MS",system-ui,sans-serif;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    font-size:clamp(18px, 2.5vw, 34px);
+  }
+  .title span{
+    background: linear-gradient(90deg, #ffe600 0%, #ff7a00 35%, #ff2bd6 70%, #7cffef 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:
+      0 0 10px rgba(255,230,0,.35),
+      0 0 18px rgba(255,50,214,.25),
+      0 10px 30px rgba(0,0,0,.35);
+  }
+  .caret{
+    display:inline-block;
+    width:10px;
+    margin-left:6px;
+    border-right:3px solid rgba(255,230,0,.85);
+    transform: translateY(2px);
+    animation: blink 800ms steps(1) infinite;
+  }
+  @keyframes blink{ 50%{opacity:0;} }
+
+  /* ✅ SAME back button as HISTORY */
+  .backBtn{
+    position:fixed;
+    right:20px;
+    top:20px;
+    z-index:10000;
+    padding:10px 15px;
+    background:#ffcc00;
+    color:#000;
+    font-weight:bold;
+    text-decoration:none;
+    border-radius:5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  /* ===== LAYOUT ===== */
+  .content{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:10;
+    padding: 88px 22px 14px;
+  }
+
+  .grid{
+    width:min(1240px, 96vw);
+    height: calc(100vh - 88px - 14px);
+    display:grid;
+    grid-template-columns: 260px 1fr 260px;
+    gap: 18px;
+    align-items: stretch;
+  }
+
+  .side{
+    display:flex;
+    flex-direction:column;
+    gap: 18px;
+    height:100%;
+  }
+
+  /* ✅ PICTURE SLOTS */
+  .ph{
+    flex: 1 1 0;
+    min-height: 110px;
+    border-radius: 18px;
+    background: rgba(255,255,255,.78);
+    box-shadow: 0 18px 50px rgba(0,0,0,.18);
+    position: relative;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    cursor:pointer;
+    user-select:none;
+  }
+  .ph strong{ color: rgba(0,0,0,.55); font-weight: 900; letter-spacing:.2px; }
+
+  .ph .note{
+    position:absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(0,0,0,.45);
+    font-weight: 800;
+    font-size: 11.5px;
+    line-height: 1.1;
+    z-index:3;
+    pointer-events:none;
+  }
+
+  .ph .phLabel{
+    position:absolute;
+    left:12px;
+    bottom:10px;
+    z-index:3;
+    padding:6px 10px;
+    border-radius:999px;
+    background: rgba(0,0,0,.50);
+    color: rgba(255,255,255,.92);
+    font-weight: 900;
+    font-size: 11.5px;
+    border: 1px solid rgba(255,255,255,.18);
+    backdrop-filter: blur(8px);
+    pointer-events:none;
+  }
+
+  .ph img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:none;
+    transform:scale(1.03);
+    transition: transform .25s ease, filter .25s ease;
+  }
+  .ph:hover img{ transform: scale(1.08); filter: saturate(1.05) contrast(1.02); }
+
+  .ph .fallback{
+    z-index:2;
+    padding: 10px 12px;
+  }
+  .ph .fade{
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.28));
+    opacity:0;
+    transition: opacity .25s ease;
+    z-index:2;
+    pointer-events:none;
+  }
+  .ph.hasImg .fade{ opacity:1; }
+
+  .centerCard{
+    height:100%;
+    border-radius: 26px;
+    background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
+    border: 1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 22px 60px rgba(0,0,0,.35);
+    overflow:hidden;
+    min-height:0;
+  }
+
+  .centerInner{
+    height:100%;
+    padding: 14px;
+    display:flex;
+    flex-direction:column;
+    gap: 8px;
+    min-height:0;
+  }
+
+  .topPill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    border-radius:999px;
+    background: linear-gradient(90deg,#ffe600,#ff7a00,#ff2bd6,#7cffef);
+    color:#2a0b3f;
+    font-weight: 900;
+    font-size: 12.5px;
+    text-shadow:0 0 6px rgba(255,255,255,.35);
+    width: fit-content;
+  }
+
+  .intro{
+    margin: 0;
+    font-weight: 700;
+    color: rgba(255,255,255,.88);
+    line-height: 1.34;
+    font-size: 14px;
+  }
+
+  .topActionsRow{
+    display:flex;
+    justify-content:flex-end;
+    gap: 10px;
+    margin-top: -2px;
+    margin-bottom: 2px;
+  }
+
+  .cards{
+    flex:1 1 auto;
+    min-height:0;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    overflow:hidden;
+  }
+
+  .card{
+    border-radius: 18px;
+    background: rgba(0,0,0,.16);
+    border: 1px solid rgba(255,255,255,.12);
+    padding: 11px;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    min-height:0;
+  }
+
+  .card h3{
+    margin: 0 0 6px;
+    font-size: 16px;
+    font-weight: 900;
+    color: rgba(255,255,255,.92);
+  }
+
+  .card p{
+    margin: 0 0 8px;
+    font-weight: 650;
+    color: rgba(255,255,255,.78);
+    line-height: 1.32;
+    font-size: 12.5px;
+  }
+
+  .bullets{
+    margin:0 0 10px;
+    padding-left: 18px;
+    color: rgba(255,255,255,.72);
+    font-weight: 650;
+    line-height: 1.28;
+    font-size: 11.5px;
+  }
+  .bullets li{ margin: 3px 0; }
+
+  .actions{
+    margin-top:auto;
+    display:flex;
+    gap: 10px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+
+  .btn{
+    border:0;
+    cursor:pointer;
+    user-select:none;
+    padding: 9px 13px;
+    border-radius: 999px;
+    font-weight: 900;
+    font-size: 14px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    white-space:nowrap;
+  }
+
+  .btnHot{
+    background: linear-gradient(135deg, #ffd200, #ff2bb6);
+    color:#0b1c3b;
+    box-shadow: 0 12px 22px rgba(0,0,0,.18);
+  }
+
+  .btnSoft{
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.18);
+    color: rgba(255,255,255,.92);
+  }
+
+  .btn:active{ transform: translateY(1px); }
+
+  @media (max-width: 1100px){
+    html,body{ height:auto; overflow:auto; }
+    .stage{ height:auto; min-height:100vh; }
+    .content{ position:relative; padding-top: 110px; }
+    .grid{ height:auto; grid-template-columns: 1fr; }
+    .cards{ grid-template-columns: 1fr; overflow:visible; }
+    .centerCard{ height:auto; }
+    .side{ flex-direction:row; flex-wrap:wrap; }
+    .ph{ min-height: 120px; }
+    .topActionsRow{ justify-content:flex-start; }
+  }
+
+  /* Reveal like history */
+  .stage.reveal .bg{ filter: blur(2px) saturate(.95) contrast(.98); opacity:.78; }
+  .stage.reveal .veil{ opacity:1; }
+
+  /* ===================== VIDEO MODAL ===================== */
+  .videoOverlay{
+    position: fixed;
+    inset: 0;
+    display:none;
+    z-index: 2147483646;
+    background: rgba(0,0,0,.45);
+    backdrop-filter: blur(10px);
+    padding: 18px;
+  }
+  .videoOverlay.show{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .videoShell{
+    width: min(1100px, 100%);
+    border-radius: 24px;
+    padding: 2px;
+    background: linear-gradient(120deg, rgba(255,230,0,.75), rgba(255,43,214,.55), rgba(124,255,239,.55), rgba(255,122,0,.60));
+    background-size: 280% 280%;
+    animation: gradMove 9s ease-in-out infinite;
+    box-shadow: 0 22px 60px rgba(0,0,0,.35);
+  }
+  @keyframes gradMove{
+    0%{ background-position: 0% 50%; }
+    50%{ background-position: 100% 50%; }
+    100%{ background-position: 0% 50%; }
+  }
+
+  .videoPanel{
+    width: 100%;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+    backdrop-filter: blur(10px);
+    overflow:hidden;
+  }
+
+  .videoTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255,255,255,.14);
+    color: rgba(255,255,255,.92);
+    font-weight: 900;
+  }
+  .closeX{
+    border:0;
+    cursor:pointer;
+    padding:10px 14px;
+    border-radius:5px;
+    background:#ffcc00;
+    color:#000;
+    font-weight: 900;
+  }
+  .videoBox{
+    position: relative;
+    width:100%;
+    aspect-ratio: 16 / 9;
+    background: rgba(0,0,0,.35);
+  }
+  .videoBox iframe{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+  }
+  .videoBox .localVideo{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+    background:#000;
+  }
+
+  /* ===================== IMAGE VIEWER ===================== */
+  .imgOverlay{
+    position: fixed;
+    inset: 0;
+    display:none;
+    z-index: 2147483644;
+    background: rgba(0,0,0,.45);
+    backdrop-filter: blur(10px);
+    padding: 18px;
+  }
+  .imgOverlay.show{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .imgShell{
+    width: min(1100px, 100%);
+    border-radius: 24px;
+    padding: 2px;
+    background: linear-gradient(120deg, rgba(255,230,0,.75), rgba(255,43,214,.55), rgba(124,255,239,.55), rgba(255,122,0,.60));
+    background-size: 280% 280%;
+    animation: gradMove 9s ease-in-out infinite;
+    box-shadow: 0 22px 60px rgba(0,0,0,.35);
+  }
+  .imgPanel{
+    width:100%;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+    backdrop-filter: blur(10px);
+    overflow:hidden;
+  }
+  .imgTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255,255,255,.14);
+    color: rgba(255,255,255,.92);
+    font-weight: 900;
+  }
+  .imgBox{
+    width:100%;
+    max-height: 78vh;
+    background: rgba(0,0,0,.35);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .imgBox img{
+    width:100%;
+    height:auto;
+    max-height:78vh;
+    object-fit:contain;
+    display:block;
+  }
+
+  /* ===================== MEDALS OVERLAY ===================== */
+  .medalsOverlay{
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 2147483645;
+    background: rgba(0,0,0,.30);
+    backdrop-filter: blur(10px);
+    padding: 18px;
+  }
+  .medalsOverlay.show{ display:flex; align-items:center; justify-content:center; }
+
+  .medalsPanel{
+    width: min(1100px, 100%);
+    max-height: min(86vh, 900px);
+    overflow: hidden;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,.20);
+    background:
+      radial-gradient(900px 380px at 20% 10%, rgba(255,210,0,.22), transparent 55%),
+      radial-gradient(900px 380px at 75% 12%, rgba(255,43,214,.18), transparent 55%),
+      radial-gradient(900px 520px at 55% 80%, rgba(124,255,239,.18), transparent 55%),
+      rgba(255,255,255,.50);
+    box-shadow: 0 22px 60px rgba(0,0,0,.25);
+    backdrop-filter: blur(12px);
+  }
+
+  .medalsTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(0,0,0,.10);
+    color: rgba(0,0,0,.82);
+    background: linear-gradient(90deg,
+      rgba(255,230,0,.40),
+      rgba(255,122,0,.24),
+      rgba(255,43,214,.22),
+      rgba(124,255,239,.22),
+      rgba(255,230,0,.40)
+    );
+    background-size: 240% 100%;
+    animation: medalsHeaderMove 10s ease-in-out infinite;
+  }
+  @keyframes medalsHeaderMove{
+    0%{ background-position: 0% 50%; }
+    50%{ background-position: 100% 50%; }
+    100%{ background-position: 0% 50%; }
+  }
+
+  .medalsH1{ font-weight: 950; letter-spacing:.2px; }
+  .medalsSub{ font-size: 11.5px; opacity:.80; font-weight: 800; margin-top: 2px; }
+
+  .medalsTopActions{ display:flex; gap: 10px; flex-wrap:wrap; justify-content:flex-end; }
+
+  .mBtn{
+    border:0;
+    cursor:pointer;
+    user-select:none;
+    padding:10px 14px;
+    border-radius:999px;
+    font-weight: 950;
+    letter-spacing:.2px;
+    background: linear-gradient(135deg, rgba(255,230,0,.16), rgba(255,43,214,.12), rgba(124,255,239,.12));
+    color: rgba(0,0,0,.78);
+    border: 1px solid rgba(0,0,0,.10);
+  }
+  .mBtn.hot{
+    background:#ffcc00;
+    color:#000;
+    border:0;
+    border-radius:5px;
+  }
+  .mBtn.ghost{
+    background: rgba(255,255,255,.70);
+    border: 1px solid rgba(0,0,0,.10);
+  }
+
+  .medalsContent{
+    padding: 12px 14px 16px;
+    overflow: auto;
+    max-height: calc(min(86vh, 900px) - 56px);
+  }
+
+  .mSection{
+    border: 1px solid rgba(0,0,0,.10);
+    border-radius: 18px;
+    padding: 12px 12px 14px;
+    margin-bottom: 12px;
+    background:
+      radial-gradient(520px 240px at 20% 0%, rgba(255,230,0,.20), transparent 60%),
+      radial-gradient(520px 240px at 85% 0%, rgba(255,43,214,.16), transparent 60%),
+      radial-gradient(520px 260px at 55% 120%, rgba(124,255,239,.16), transparent 60%),
+      rgba(255,255,255,.55);
+    color: rgba(0,0,0,.84);
+    box-shadow: 0 14px 28px rgba(0,0,0,.08);
+  }
+
+  .mHead{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 12px;
+    flex-wrap:wrap;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0,0,0,.10);
+    margin-bottom: 10px;
+  }
+
+  .mH2{ font-weight: 950; }
+  .mHint{ font-size: 11.5px; opacity:.78; font-weight: 900; margin-top: 2px; }
+
+  .mTabs{
+    display:flex;
+    gap: 8px;
+    padding: 6px;
+    border-radius: 999px;
+    background: rgba(0,0,0,.06);
+    border: 1px solid rgba(0,0,0,.08);
+  }
+  .mTab{
+    border:0;
+    cursor:pointer;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: transparent;
+    color: rgba(0,0,0,.62);
+    font-weight: 950;
+  }
+  .mTab.active{
+    background: linear-gradient(135deg, #ffd200, #ff2bb6);
+    color: #0b1c3b;
+  }
+
+  .mTableWrap{
+    width:100%;
+    overflow:auto;
+    border-radius: 14px;
+    border: 1px solid rgba(0,0,0,.10);
+    background:
+      linear-gradient(90deg,
+        rgba(255,230,0,.12),
+        rgba(255,43,214,.10),
+        rgba(124,255,239,.10)
+      );
+  }
+
+  .mTable{
+    width:100%;
+    border-collapse: collapse;
+    min-width: 560px;
+    background: rgba(255,255,255,.55);
+  }
+
+  .mTable th{
+    text-align:left;
+    font-size: 11.5px;
+    opacity:.90;
+    padding: 10px 10px;
+    position: sticky;
+    top: 0;
+    background:
+      linear-gradient(90deg,
+        rgba(255,230,0,.28),
+        rgba(255,122,0,.16),
+        rgba(255,43,214,.16),
+        rgba(124,255,239,.16)
+      ),
+      rgba(255,255,255,.78);
+    border-bottom: 1px solid rgba(0,0,0,.10);
+  }
+  .mTable td{
+    padding: 10px 10px;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    font-weight: 850;
+    opacity:.95;
+    background: rgba(255,255,255,.22);
+  }
+  .mTable tbody tr:hover td{
+    background: rgba(255,255,255,.34);
+    box-shadow: inset 0 0 0 9999px rgba(255,230,0,.06);
+  }
+
+  .mYear{ font-variant-numeric: tabular-nums; font-weight: 950; width: 90px; }
+
+  .mActions{
+    display:flex;
+    justify-content:flex-end;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap:wrap;
+  }
+</style>
+</head>
+
+<body>
+<div class="stage" id="stage">
+  <img class="bg" src="history-bg.png" alt="bg">
+  <div class="veil"></div>
+
+  <div class="titleWrap">
+    <div class="title">
+      <span id="titleText"></span><span class="caret" id="caret"></span>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="grid">
+
+      <!-- LEFT PICS -->
+      <div class="side">
+        <div class="ph" data-img="assets/images/Olympic.jpeg" data-caption="Olympics">
+          <img alt="Olympics">
+          <div class="fade"></div>
+          <div class="phLabel">TEAM</div>
+          <div class="fallback"><strong>TEAM PHOTO<br/>PLACEHOLDER</strong></div>
+          <div class="note">(click)</div>
+        </div>
+
+        <div class="ph" data-img="assets/images/Italy.jpeg" data-caption="Italy (Star player / team)">
+          <img alt="Italy">
+          <div class="fade"></div>
+          <div class="phLabel">STAR</div>
+          <div class="fallback"><strong>STAR PLAYER<br/>PLACEHOLDER</strong></div>
+          <div class="note">(click)</div>
+        </div>
+
+        <div class="ph" data-img="assets/images/Who.jpg" data-caption="Fans / Who’s who">
+          <img alt="Fans">
+          <div class="fade"></div>
+          <div class="phLabel">FANS</div>
+          <div class="fallback"><strong>FANS / STADIUM<br/>PLACEHOLDER</strong></div>
+          <div class="note">(click)</div>
+        </div>
+      </div>
+
+      <!-- CENTER -->
+      <div class="centerCard">
+        <div class="centerInner">
+          <div class="topPill">International Volleyball Today 🌍</div>
+
+          <p class="intro">
+            Volleyball is HUGE right now: elite leagues, viral highlights, packed arenas and global mega-events.
+            Here are the 4 competitions that define world volleyball today.
+          </p>
+
+          <div class="topActionsRow">
+            <button class="btn btnSoft" id="openMedalsBtn" type="button">🏅 Medal winners</button>
+          </div>
+
+          <div class="cards">
+            <!-- Olympics -->
+            <div class="card">
+              <h3>Olympic Games</h3>
+              <p>The biggest stage. One medal match can turn players into legends.</p>
+              <ul class="bullets">
+                <li>Every 4 years</li>
+                <li>Most global media attention</li>
+                <li>Indoor + Beach (this page focuses on indoor)</li>
+              </ul>
+              <div class="actions">
+                <button class="btn btnHot" type="button"
+                        data-video-title="Olympic Games – Highlight"
+                        data-video-id="fsr8KRDoOUI">▶ Watch Olympics highlight</button>
+              </div>
+            </div>
+
+            <!-- Worlds -->
+            <div class="card">
+              <h3>FIVB World Championships</h3>
+              <p>The “real world title” — pure volleyball, no shortcuts.</p>
+              <ul class="bullets">
+                <li>Every 4 years</li>
+                <li>Top national teams worldwide</li>
+                <li>Historic rivalries + iconic finals</li>
+              </ul>
+              <div class="actions">
+                <button class="btn btnHot" type="button"
+                        data-video-title="World Championships – Highlight"
+                        data-video-id="S0WtUP2pZx0">▶ Watch Worlds highlight</button>
+              </div>
+            </div>
+
+            <!-- VNL -->
+            <div class="card">
+              <h3>Volleyball Nations League (VNL)</h3>
+              <p>Every summer: nonstop bangers, fast pace, new stars.</p>
+              <ul class="bullets">
+                <li>Annual elite tournament (since 2018)</li>
+                <li>Lots of matches → lots of highlights</li>
+                <li>Great to follow players season-to-season</li>
+              </ul>
+              <div class="actions">
+                <button class="btn btnHot" type="button"
+                        data-video-title="VNL – Highlight"
+                        data-video-id="rwZwpvKytoI">▶ Watch VNL highlight</button>
+              </div>
+            </div>
+
+            <!-- Para -->
+            <div class="card">
+              <h3>Para Volleyball (Sitting Volleyball)</h3>
+              <p>Fast. Tactical. Insane reactions. Massive respect.</p>
+              <ul class="bullets">
+                <li>Paralympic sport</li>
+                <li>Men’s & Women’s events</li>
+                <li>Top nations push the level higher every cycle</li>
+              </ul>
+              <div class="actions">
+                <button class="btn btnHot" type="button"
+                        data-video-title="Sitting Volleyball – Highlight"
+                        data-video-id="CrcNeOMIy7I">▶ Watch Para highlight</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PICS -->
+      <div class="side">
+        <div class="ph" data-img="assets/images/China.jpg" data-caption="China">
+          <img alt="China">
+          <div class="fade"></div>
+          <div class="phLabel">CLUB</div>
+          <div class="fallback"><strong>CLUB TEAM<br/>PLACEHOLDER</strong></div>
+          <div class="note">(click)</div>
+        </div>
+
+        <div class="ph" data-img="assets/images/Egypt.jpg" data-caption="Egypt">
+          <img alt="Egypt">
+          <div class="fade"></div>
+          <div class="phLabel">NATIONAL</div>
+          <div class="fallback"><strong>NATIONAL TEAM<br/>PLACEHOLDER</strong></div>
+          <div class="note">(click)</div>
+        </div>
+
+        <div class="ph" data-img="assets/images/Italy.jpeg" data-caption="Tournament moment (temporary)">
+          <img alt="Moment">
+          <div class="fade"></div>
+          <div class="phLabel">MOMENT</div>
+          <div class="fallback"><strong>TOURNAMENT MOMENT<br/>PLACEHOLDER</strong></div>
+          <div class="note">(click)</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<a class="backBtn" href="index.html">← Back to coverpage</a>
+
+<!-- ===================== IMAGE VIEWER ===================== -->
+<div id="imgOverlay" class="imgOverlay" aria-hidden="true">
+  <div class="imgShell">
+    <div class="imgPanel" role="dialog" aria-modal="true" aria-label="Picture viewer">
+      <div class="imgTop">
+        <div id="imgTitle">Picture</div>
+        <button class="closeX" id="closeImgBtn" type="button">✕ Close</button>
+      </div>
+      <div class="imgBox">
+        <img id="imgBig" alt="Selected picture">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== VIDEO OVERLAY ===================== -->
+<div id="videoOverlay" class="videoOverlay" aria-hidden="true">
+  <div class="videoShell">
+    <div class="videoPanel" role="dialog" aria-modal="true" aria-label="Highlight video">
+      <div class="videoTop">
+        <div id="videoTitle">Highlight</div>
+        <button class="closeX" id="closeVideoBtn" type="button">✕ Close</button>
+      </div>
+      <div class="videoBox">
+        <video id="localVideo" class="localVideo" controls playsinline></video>
+        <iframe id="videoFrame"
+          src=""
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowfullscreen
+          referrerpolicy="strict-origin-when-cross-origin"
+          style="display:none"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MEDALS OVERLAY ===================== -->
+<div id="medalsOverlay" class="medalsOverlay" aria-hidden="true">
+  <div class="medalsPanel" role="dialog" aria-modal="true" aria-label="Medal Winners">
+    <div class="medalsTop">
+      <div>
+        <div class="medalsH1">🏅 Medal Winners</div>
+        <div class="medalsSub">Podiums (Gold / Silver / Bronze). Tap Men/Women. Copy tables.</div>
+      </div>
+      <div class="medalsTopActions">
+        <button class="mBtn hot" id="closeMedalsBtn" type="button">✕ Close</button>
+      </div>
+    </div>
+
+    <div class="medalsContent">
+
+      <!-- OLYMPICS -->
+      <section class="mSection" data-section="olympics">
+        <div class="mHead">
+          <div>
+            <div class="mH2">Olympic Games (Indoor)</div>
+            <div class="mHint">Podiums</div>
+          </div>
+          <div class="mTabs">
+            <button class="mTab active" data-target="olympics" data-tab="men" type="button">Men</button>
+            <button class="mTab" data-target="olympics" data-tab="women" type="button">Women</button>
+          </div>
+        </div>
+
+        <div class="mTableWrap">
+          <table class="mTable">
+            <thead><tr><th>Year</th><th>🥇 Gold</th><th>🥈 Silver</th><th>🥉 Bronze</th></tr></thead>
+            <tbody data-table="olympics-men">
+              <tr><td class="mYear">2024</td><td>France</td><td>Poland</td><td>USA</td></tr>
+              <tr><td class="mYear">2020</td><td>France</td><td>ROC</td><td>Argentina</td></tr>
+              <tr><td class="mYear">2016</td><td>Brazil</td><td>Italy</td><td>USA</td></tr>
+              <tr><td class="mYear">2012</td><td>Russia</td><td>Brazil</td><td>Italy</td></tr>
+            </tbody>
+            <tbody data-table="olympics-women" style="display:none">
+              <tr><td class="mYear">2024</td><td>Italy</td><td>USA</td><td>Brazil</td></tr>
+              <tr><td class="mYear">2020</td><td>USA</td><td>Brazil</td><td>Serbia</td></tr>
+              <tr><td class="mYear">2016</td><td>China</td><td>Serbia</td><td>USA</td></tr>
+              <tr><td class="mYear">2012</td><td>Brazil</td><td>USA</td><td>Japan</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mActions"><button class="mBtn ghost" data-copy="olympics" type="button">Copy Olympics</button></div>
+      </section>
+
+      <!-- WORLDS -->
+      <section class="mSection" data-section="worlds">
+        <div class="mHead">
+          <div>
+            <div class="mH2">FIVB World Championships (Indoor)</div>
+            <div class="mHint">Podiums</div>
+          </div>
+          <div class="mTabs">
+            <button class="mTab active" data-target="worlds" data-tab="men" type="button">Men</button>
+            <button class="mTab" data-target="worlds" data-tab="women" type="button">Women</button>
+          </div>
+        </div>
+
+        <div class="mTableWrap">
+          <table class="mTable">
+            <thead><tr><th>Year</th><th>🥇 Gold</th><th>🥈 Silver</th><th>🥉 Bronze</th></tr></thead>
+            <tbody data-table="worlds-men">
+              <tr><td class="mYear">2022</td><td>Italy</td><td>Poland</td><td>Brazil</td></tr>
+              <tr><td class="mYear">2018</td><td>Poland</td><td>Brazil</td><td>USA</td></tr>
+              <tr><td class="mYear">2014</td><td>Poland</td><td>Brazil</td><td>Germany</td></tr>
+              <tr><td class="mYear">2010</td><td>Brazil</td><td>Cuba</td><td>Serbia</td></tr>
+            </tbody>
+            <tbody data-table="worlds-women" style="display:none">
+              <tr><td class="mYear">2025</td><td>Italy</td><td>Turkey</td><td>Brazil</td></tr>
+              <tr><td class="mYear">2022</td><td>Serbia</td><td>Brazil</td><td>Italy</td></tr>
+              <tr><td class="mYear">2018</td><td>Brazil</td><td>Japan</td><td>China</td></tr>
+              <tr><td class="mYear">2014</td><td>USA</td><td>China</td><td>Brazil</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mActions"><button class="mBtn ghost" data-copy="worlds" type="button">Copy Worlds</button></div>
+      </section>
+
+      <!-- VNL -->
+      <section class="mSection" data-section="vnl">
+        <div class="mHead">
+          <div>
+            <div class="mH2">Volleyball Nations League (VNL)</div>
+            <div class="mHint">4 rows</div>
+          </div>
+          <div class="mTabs">
+            <button class="mTab active" data-target="vnl" data-tab="men" type="button">Men</button>
+            <button class="mTab" data-target="vnl" data-tab="women" type="button">Women</button>
+          </div>
+        </div>
+
+        <div class="mTableWrap">
+          <table class="mTable">
+            <thead><tr><th>Year</th><th>🥇 Gold</th><th>🥈 Silver</th><th>🥉 Bronze</th></tr></thead>
+            <tbody data-table="vnl-men">
+              <tr><td class="mYear">2025</td><td>Poland</td><td>Italy</td><td>Brazil</td></tr>
+              <tr><td class="mYear">2022</td><td>France</td><td>USA</td><td>Poland</td></tr>
+              <tr><td class="mYear">2018</td><td>Russia</td><td>France</td><td>USA</td></tr>
+              <tr><td class="mYear">TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
+            </tbody>
+            <tbody data-table="vnl-women" style="display:none">
+              <tr><td class="mYear">2025</td><td>Italy</td><td>Brazil</td><td>Poland</td></tr>
+              <tr><td class="mYear">2022</td><td>Italy</td><td>USA</td><td>Brazil</td></tr>
+              <tr><td class="mYear">2018</td><td>USA</td><td>Turkey</td><td>China</td></tr>
+              <tr><td class="mYear">TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mActions"><button class="mBtn ghost" data-copy="vnl" type="button">Copy VNL</button></div>
+      </section>
+
+      <!-- PARA -->
+      <section class="mSection" data-section="para">
+        <div class="mHead">
+          <div>
+            <div class="mH2">Paralympics – Sitting Volleyball</div>
+            <div class="mHint">2024</div>
+          </div>
+          <div class="mTabs">
+            <button class="mTab active" data-target="para" data-tab="men" type="button">Men</button>
+            <button class="mTab" data-target="para" data-tab="women" type="button">Women</button>
+          </div>
+        </div>
+
+        <div class="mTableWrap">
+          <table class="mTable">
+            <thead><tr><th>Year</th><th>🥇 Gold</th><th>🥈 Silver</th><th>🥉 Bronze</th></tr></thead>
+            <tbody data-table="para-men">
+              <tr><td class="mYear">2024</td><td>Iran</td><td>Bosnia H.</td><td>Egypt</td></tr>
+            </tbody>
+            <tbody data-table="para-women" style="display:none">
+              <tr><td class="mYear">2024</td><td>USA</td><td>China</td><td>Canada</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mActions"><button class="mBtn ghost" data-copy="para" type="button">Copy Para</button></div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== Title typing =====
+  const stage     = document.getElementById("stage");
+  const titleText = document.getElementById("titleText");
+  const caret     = document.getElementById("caret");
+
+  const SHOW_BG_ONLY_MS = 650;
+  const TYPE_SPEED_MS   = 38;
+  const REVEAL_MS       = 1550;
+
+  const TITLE = "INTERNATIONAL VOLLEYBALL TODAY";
+  function typeTitle(){
+    let i=0;
+    (function tick(){
+      titleText.textContent = TITLE.slice(0,i++);
+      if(i <= TITLE.length) setTimeout(tick, TYPE_SPEED_MS);
+      else caret.style.display = "none";
+    })();
+  }
+
+  window.addEventListener("load", ()=>{
+    setTimeout(typeTitle, SHOW_BG_ONLY_MS);
+    setTimeout(()=>stage.classList.add("reveal"), REVEAL_MS);
+  });
+
+  // ===================== PICTURES =====================
+  const imgOverlay = document.getElementById("imgOverlay");
+  const imgBig     = document.getElementById("imgBig");
+  const imgTitle   = document.getElementById("imgTitle");
+  const closeImgBtn= document.getElementById("closeImgBtn");
+
+  function showImg(src, caption){
+    imgTitle.textContent = caption || "Picture";
+    imgBig.src = src;
+    imgOverlay.classList.add("show");
+    imgOverlay.setAttribute("aria-hidden","false");
+    document.body.style.overflow = "hidden";
+  }
+  function closeImg(){
+    imgOverlay.classList.remove("show");
+    imgOverlay.setAttribute("aria-hidden","true");
+    imgBig.src = "";
+    document.body.style.overflow = "";
+  }
+
+  closeImgBtn.addEventListener("click", closeImg);
+  imgOverlay.addEventListener("click", (e)=>{ if(e.target === imgOverlay) closeImg(); });
+
+  document.querySelectorAll(".ph[data-img]").forEach(ph=>{
+    const src = ph.getAttribute("data-img");
+    const caption = ph.getAttribute("data-caption") || "Picture";
+    const img = ph.querySelector("img");
+    if(!img) return;
+
+    img.src = src;
+    img.onload = ()=>{
+      img.style.display = "block";
+      ph.classList.add("hasImg");
+    };
+    img.onerror = ()=>{
+      img.style.display = "none";
+      ph.classList.remove("hasImg");
+    };
+
+    ph.addEventListener("click", ()=>{
+      if(ph.classList.contains("hasImg")){
+        showImg(src, caption);
+      }
+    });
+  });
+
+  // ===================== VIDEO (LOCAL MP4 first, YouTube fallback) =====================
+  const videoOverlay  = document.getElementById("videoOverlay");
+  const videoFrame    = document.getElementById("videoFrame");
+  const localVideo    = document.getElementById("localVideo");
+  const videoTitle    = document.getElementById("videoTitle");
+  const closeVideoBtn = document.getElementById("closeVideoBtn");
+
+  function openVideo({ id, title, local }){
+    videoTitle.textContent = title || "Highlight";
+
+    // Reset
+    videoFrame.src = "";
+    videoFrame.style.display = "none";
+    localVideo.pause();
+    localVideo.removeAttribute("src");
+    localVideo.load();
+    localVideo.style.display = "none";
+
+    videoOverlay.classList.add("show");
+    videoOverlay.setAttribute("aria-hidden","false");
+    document.body.style.overflow = "hidden";
+
+    
+    // 2) Fallback YouTube
+    openYouTube(id);
+  }
+
+  function openYouTube(id){
+    if(!id) return;
+
+    // ✅ Important: works best with http://localhost, but we avoid breaking file://
+    const isHttp = location.protocol === "http:" || location.protocol === "https:";
+    const originPart = isHttp ? `&origin=${encodeURIComponent(location.origin)}` : "";
+
+    videoFrame.src =
+      `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&modestbranding=1&playsinline=1${originPart}`;
+    videoFrame.style.display = "block";
+  }
+
+  function closeVideo(){
+    videoOverlay.classList.remove("show");
+    videoOverlay.setAttribute("aria-hidden","true");
+    localVideo.pause();
+    localVideo.removeAttribute("src");
+    localVideo.load();
+    localVideo.style.display = "none";
+    videoFrame.src = "";
+    videoFrame.style.display = "none";
+    document.body.style.overflow = "";
+  }
+
+  document.querySelectorAll("[data-video-id]").forEach(btn=>{
+    btn.addEventListener("click", ()=> openVideo({
+      id: btn.dataset.videoId,
+      title: btn.dataset.videoTitle,
+      local: btn.dataset.local
+    }));
+  });
+
+  closeVideoBtn.addEventListener("click", closeVideo);
+  videoOverlay.addEventListener("click", (e)=>{ if(e.target === videoOverlay) closeVideo(); });
+
+  // ===================== MEDALS =====================
+  const medalsOverlay = document.getElementById("medalsOverlay");
+  const openMedalsBtn = document.getElementById("openMedalsBtn");
+  const closeMedalsBtn= document.getElementById("closeMedalsBtn");
+
+  function openMedals(){
+    medalsOverlay.classList.add("show");
+    medalsOverlay.setAttribute("aria-hidden","false");
+    document.body.style.overflow = "hidden";
+  }
+  function closeMedals(){
+    medalsOverlay.classList.remove("show");
+    medalsOverlay.setAttribute("aria-hidden","true");
+    document.body.style.overflow = "";
+  }
+
+  openMedalsBtn.addEventListener("click", openMedals);
+  closeMedalsBtn.addEventListener("click", closeMedals);
+  medalsOverlay.addEventListener("click", (e)=>{ if(e.target === medalsOverlay) closeMedals(); });
+
+  window.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape"){
+      if(videoOverlay.classList.contains("show")) closeVideo();
+      if(medalsOverlay.classList.contains("show")) closeMedals();
+      if(imgOverlay.classList.contains("show")) closeImg();
+    }
+  });
+
+  function setTab(sectionKey, tabKey){
+    const menBody = document.querySelector(`tbody[data-table="${sectionKey}-men"]`);
+    const womenBody = document.querySelector(`tbody[data-table="${sectionKey}-women"]`);
+    if(!menBody || !womenBody) return;
+
+    const showMen = tabKey === "men";
+    menBody.style.display = showMen ? "" : "none";
+    womenBody.style.display = showMen ? "none" : "";
+
+    document.querySelectorAll(`.mTab[data-target="${sectionKey}"]`).forEach(b=>{
+      b.classList.toggle("active", b.dataset.tab === tabKey);
+    });
+  }
+  document.querySelectorAll(".mTab").forEach(b=>{
+    b.addEventListener("click", ()=> setTab(b.dataset.target, b.dataset.tab));
+  });
+  ["olympics","worlds","vnl","para"].forEach(k=>setTab(k,"men"));
+
+  function getVisibleTableText(sectionKey){
+    const menVisible = document.querySelector(`tbody[data-table="${sectionKey}-men"]`)?.style.display !== "none";
+    const activeBody = document.querySelector(`tbody[data-table="${sectionKey}-${menVisible ? "men":"women"}"]`);
+    const titleMap = {
+      olympics:"Olympic Games (Indoor)",
+      worlds:"FIVB World Championships (Indoor)",
+      vnl:"Volleyball Nations League (VNL)",
+      para:"Paralympics – Sitting Volleyball"
+    };
+    const mode = menVisible ? "Men" : "Women";
+    let out = `${titleMap[sectionKey] || sectionKey} – ${mode}\nYear | Gold | Silver | Bronze\n`;
+    if(!activeBody) return out + "(no data)\n\n";
+    [...activeBody.querySelectorAll("tr")].forEach(tr=>{
+      const tds = [...tr.querySelectorAll("td")];
+      if(tds.length < 4) return;
+      out += `${tds[0].innerText.trim()} | ${tds[1].innerText.trim()} | ${tds[2].innerText.trim()} | ${tds[3].innerText.trim()}\n`;
+    });
+    return out + "\n";
+  }
+
+  async function copyText(text){
+    try{ await navigator.clipboard.writeText(text); }
+    catch(e){
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+  }
+
+  document.querySelectorAll("[data-copy]").forEach(btn=>{
+    btn.addEventListener("click", ()=> copyText(getVisibleTableText(btn.dataset.copy)));
+  });
+</script>
+  <script src="common.js?v=4"></script>
+</body>
+</html>

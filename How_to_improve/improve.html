@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Level Up Your Volleyball Game</title>
+
+<style>
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  padding:0;
+  height:100%;
+  font-family:"Segoe UI", Arial, sans-serif;
+  color:#fff;
+  overflow:hidden;
+}
+
+/* BACKGROUND */
+body{
+  background:
+    linear-gradient(rgba(6,10,18,.40), rgba(6,10,18,.22)),
+    url("../assets/images/history-bg.png") center/cover no-repeat fixed;
+}
+
+/* DIM OVERLAY */
+.dim{
+  position:fixed; inset:0;
+  background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.70));
+  opacity:0;
+  transition:opacity 900ms ease;
+  pointer-events:none;
+  z-index:0;
+}
+.dim.on{opacity:1;}
+
+/* BACK BUTTON */
+.backBtn{
+  position:fixed;
+  right:18px;
+  top:18px;
+  z-index:50;
+  padding:10px 16px;
+  border-radius:999px;
+  border:none;
+  cursor:pointer;
+  background:linear-gradient(135deg,#ffd200,#ff7a18);
+  color:#102a56;
+  font-weight:900;
+}
+
+/* PAGE */
+.page{
+  position:relative;
+  z-index:1;
+  max-width:1400px;
+  margin:0 auto;
+  padding:22px 16px 24px;
+}
+
+/* HEADLINE */
+.hero{margin:0 0 14px;}
+.hero h1{
+  margin:0 0 8px;
+  font-size:clamp(34px,4.2vw,64px);
+  letter-spacing:1px;
+  background:linear-gradient(90deg,#ff4bd6,#ffd200,#6ee7ff);
+  -webkit-background-clip:text;
+  color:transparent;
+  opacity:0;
+  transform:translateY(10px);
+  transition:opacity 800ms ease, transform 800ms ease;
+}
+.hero p{
+  margin:0;
+  max-width:980px;
+  font-size:15px;
+  font-weight:750;
+  line-height:1.45;
+  opacity:0;
+  transform:translateY(10px);
+  transition:opacity 800ms ease, transform 800ms ease;
+}
+.hero.show h1,.hero.show p{opacity:1;transform:translateY(0);}
+
+/* MAIN GRID */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 360px;
+  gap:18px;
+  align-items:start;
+}
+
+/* PDF GRID */
+.pdfGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.card{
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(10,14,20,.28);
+  border-radius:16px;
+  overflow:hidden;
+  opacity:0;
+  transform:translateY(14px);
+  transition:opacity 650ms ease, transform 650ms ease;
+}
+.card.show{opacity:1;transform:translateY(0);}
+
+.cardHead{
+  padding:10px 12px;
+  font-weight:950;
+  background:rgba(0,0,0,.16);
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+
+.pdfFrame{
+  width:100%;
+  height:62vh;
+  min-height:520px;
+  border:none;
+  display:block;
+  background:#0b1024;
+}
+
+/* MENU */
+.menu{padding:12px;}
+.menuTitle{
+  font-weight:950;
+  font-size:16px;
+  margin:0 0 10px;
+}
+.btnGrid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+}
+.navBtn{
+  width:100%;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.16);
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+  text-align:left;
+  opacity:0;
+  transform:translateY(14px);
+  transition:opacity 650ms ease, transform 650ms ease;
+}
+.navBtn.show{opacity:1;transform:translateY(0);}
+.tag{
+  font-size:11px;
+  font-weight:950;
+  padding:6px 10px;
+  border-radius:999px;
+  margin-right:8px;
+  background:linear-gradient(135deg,#ffd200,#ff7a18);
+  color:#102a56;
+}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  html,body{overflow:auto;}
+  .grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+
+<body>
+<div class="dim" id="dim"></div>
+
+<button class="backBtn" onclick="location.href='../index.html'">⟵ Back to coverpage</button>
+
+<div class="page">
+
+<div class="hero" id="hero">
+  <h1>Level Up Your Volleyball Game</h1>
+  <p>Train smarter, compare techniques, and become a real volleyball champion.</p>
+</div>
+
+<div class="grid">
+
+  <div class="pdfGrid">
+    <div class="card" id="pdf1">
+      <div class="cardHead">PDF – Page 1</div>
+      <iframe class="pdfFrame"
+        src="Yellow%20Modern%20Volleyball%20Strategy%20Presentation%20(1).pdf#page=1"></iframe>
+    </div>
+
+    <div class="card" id="pdf2">
+      <div class="cardHead">PDF – Page 2</div>
+      <iframe class="pdfFrame"
+        src="Yellow%20Modern%20Volleyball%20Strategy%20Presentation%20(1).pdf#page=2"></iframe>
+    </div>
+  </div>
+
+  <aside class="card menu" id="menu">
+    <div class="menuTitle">Choose a training module</div>
+    <div class="btnGrid">
+      <button class="navBtn"><span class="tag">01</span> Serve power & accuracy</button>
+      <button class="navBtn"><span class="tag">02</span> Passing control</button>
+      <button class="navBtn"><span class="tag">03</span> Setting skills</button>
+      <button class="navBtn"><span class="tag">04</span> Attack timing</button>
+      <button class="navBtn"><span class="tag">05</span> Block footwork</button>
+      <button class="navBtn"><span class="tag">06</span> Defense reaction</button>
+      <button class="navBtn"><span class="tag">07</span> Serve receive</button>
+      <button class="navBtn"><span class="tag">08</span> Rotation system</button>
+      <button class="navBtn"><span class="tag">09</span> Mental game</button>
+      <button class="navBtn"><span class="tag">10</span> Weekly plan</button>
+    </div>
+  </aside>
+
+</div>
+</div>
+
+<script>
+const hero=document.getElementById("hero");
+const dim=document.getElementById("dim");
+const pdf1=document.getElementById("pdf1");
+const pdf2=document.getElementById("pdf2");
+const menu=document.getElementById("menu");
+const btns=document.querySelectorAll(".navBtn");
+
+window.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(()=>hero.classList.add("show"),250);
+  setTimeout(()=>dim.classList.add("on"),900);
+  setTimeout(()=>pdf1.classList.add("show"),1350);
+  setTimeout(()=>pdf2.classList.add("show"),1600);
+  setTimeout(()=>menu.classList.add("show"),1850);
+  btns.forEach((b,i)=>setTimeout(()=>b.classList.add("show"),2050+i*90));
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>From Basics to Perfection</title>
+
+<style>
+  html,body{
+    margin:0;height:100%;overflow:hidden;background:#000;
+    font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+  }
+  .stage{position:relative;width:100vw;height:100vh;overflow:hidden;}
+
+  /* background like History */
+  .bg{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;filter:blur(1px);
+    z-index:1;
+  }
+  .veil{
+    position:absolute;inset:0;
+    background:radial-gradient(circle at 50% 35%, rgba(0,0,0,.05), rgba(0,0,0,.45));
+    z-index:2;
+  }
+
+  /* =========================
+     HISTORY-STYLE HEADLINE
+     (pill + script look + slide/fade)
+     ========================= */
+  .titleWrap{
+    position:fixed;top:16px;left:50%;transform:translateX(-50%);
+    z-index:9999;
+    pointer-events:none;
+  }
+  .titlePill{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 22px;
+    border-radius:999px;
+    background:rgba(0,0,0,.28);
+    backdrop-filter:blur(10px);
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    border:1px solid rgba(255,255,255,.12);
+    animation:titleIn 900ms cubic-bezier(.2,.9,.2,1) both;
+  }
+  @keyframes titleIn{
+    from{opacity:0; transform:translateY(-10px) scale(.985);}
+    to{opacity:1; transform:translateY(0) scale(1);}
+  }
+
+  /* “history-like” handwritten look */
+  .titlePill .tA,
+  .titlePill .tB{
+    font-family:"Comic Sans MS","Trebuchet MS","Segoe Print","Bradley Hand",cursive;
+    font-weight:900;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    font-size:38px;
+    line-height:1;
+    text-shadow:0 10px 22px rgba(0,0,0,.35);
+    white-space:nowrap;
+  }
+  .titlePill .tA{ color:#ffcf33; }       /* yellow */
+  .titlePill .dash{ color:#ff58d8; font-weight:900; }
+  .titlePill .tB{ color:#ff58d8; }       /* pink */
+
+  /* Back button (make sure it's fully visible) */
+  .backBtn{
+    position:fixed;top:14px;right:14px;z-index:9999;
+    padding:9px 14px;border-radius:999px;border:none;
+    background:linear-gradient(135deg,#ffd200,#ff7a18);
+    color:#102a56;font-weight:900;cursor:pointer;
+    box-shadow:0 10px 26px rgba(0,0,0,.25);
+    text-decoration:none;
+    display:inline-block;
+  }
+  .backBtn:active{transform:translateY(1px)}
+
+  /* Grid container */
+  .grid{
+    position:absolute;
+    left:50%;
+    top:110px;
+    transform:translateX(-50%);
+    width:min(1180px, 88vw);
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:26px;
+    z-index:10;
+  }
+
+  /* Each card fades in (2s gap) */
+  .card{
+    opacity:0;
+    transform: translateY(18px) scale(.985);
+    animation: cardIn 900ms cubic-bezier(.2,.9,.2,1) forwards;
+  }
+  .card:nth-child(1){ animation-delay: 0s; }
+  .card:nth-child(2){ animation-delay: 2s; }
+  .card:nth-child(3){ animation-delay: 4s; }
+  .card:nth-child(4){ animation-delay: 6s; }
+  @keyframes cardIn{ to{ opacity:1; transform: translateY(0) scale(1); } }
+
+  /* Readable label */
+  .card h2{
+    display:inline-block;
+    margin:0 0 10px 6px;
+    padding:6px 12px;
+    border-radius:12px;
+    background:rgba(255,255,255,.74);
+    color:#0b2555;
+    font-size:18px;
+    font-weight:900;
+    letter-spacing:.2px;
+    box-shadow:0 10px 22px rgba(0,0,0,.20);
+  }
+
+  /* =========================
+     YouTube card (link only)
+     Fix: show thumbnail 100% (no cropping)
+     ========================= */
+  .ytCard{
+    position:relative;
+    width:100%;
+    border-radius:18px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.10);
+    box-shadow:0 18px 40px rgba(0,0,0,.45);
+    background:rgba(0,0,0,.35);
+  }
+  .ytLink{
+    display:block;
+    position:relative;
+    width:100%;
+    padding-top:56.25%; /* 16:9 */
+    text-decoration:none;
+    color:#fff;
+    background:rgba(0,0,0,.55);
+  }
+
+  /* IMPORTANT CHANGE: contain (no crop), remove zoom */
+  .ytThumb{
+    position:absolute;inset:0;
+    width:100%;height:100%;
+    object-fit:contain;     /* was cover */
+    transform:none;         /* was scale(1.03) */
+    background:#000;
+  }
+
+  .ytShade{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(0,0,0,.08), rgba(0,0,0,.62)),
+      linear-gradient(135deg, rgba(255,210,0,.10), rgba(255,88,216,.08), rgba(124,255,239,.06));
+  }
+
+  .ytTitle{
+    position:absolute;
+    left:14px;right:14px;top:12px;
+    padding:10px 12px;
+    border-radius:14px;
+    background:rgba(0,0,0,.40);
+    border:1px solid rgba(255,255,255,.14);
+    backdrop-filter:blur(8px);
+    font-weight:900;
+    font-size:14px;
+    line-height:1.25;
+    text-shadow:0 8px 22px rgba(0,0,0,.35);
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+  }
+
+  .ytOpenBtn{
+    position:absolute;
+    left:60%;top:50%;
+    transform:translate(-50%,-50%);
+    padding:12px 18px;
+    border-radius:999px;
+    background:linear-gradient(135deg,#ffd200,#ff7a18);
+    color:#102a56;
+    font-weight:1000;
+    letter-spacing:.06em;
+    box-shadow:0 16px 34px rgba(0,0,0,.40);
+    border:1px solid rgba(255,255,255,.18);
+    z-index:5;
+    pointer-events:none;
+    white-space:nowrap;
+    max-width:calc(100% - 28px);
+    text-align:center;
+  }
+  .ytCard:hover .ytOpenBtn{
+    filter:brightness(1.05);
+    transform:translate(-50%,-50%) scale(1.02);
+  }
+  .ytCard:active{transform:translateY(1px)}
+
+  /* Mobile */
+  @media(max-width:980px){
+    html,body{ overflow:auto; }
+    .stage{min-height:100vh;height:auto;overflow:auto;}
+    .grid{
+      position:relative;
+      top:auto;left:auto;transform:none;
+      margin:110px auto 38px;
+      width:min(920px, 92vw);
+      grid-template-columns:1fr;
+      gap:20px;
+    }
+    .titlePill .tA,
+    .titlePill .tB{
+      font-size:26px;
+      letter-spacing:.05em;
+    }
+    .backBtn{ top:12px; right:12px; padding:8px 12px; }
+  }
+</style>
+</head>
+
+<body>
+  <div class="stage">
+    <img class="bg" src="history-bg.png" alt="bg">
+    <div class="veil"></div>
+
+    <!-- HISTORY-STYLE title -->
+    <div class="titleWrap">
+      <div class="titlePill">
+        <span class="tA">FROM BASICS TO</span>
+        <span class="dash">—</span>
+        <span class="tB">PERFECTION</span>
+      </div>
+    </div>
+
+    <a class="backBtn" href="index.html">← Back to Coverpage</a>
+
+    <div class="grid">
+
+      <!-- 1 -->
+      <div class="card">
+        <h2>Practice positioning fingers</h2>
+        <div class="ytCard">
+          <a class="ytLink" href="https://www.youtube.com/watch?v=tpuv3hmZqqU" target="_blank" rel="noopener noreferrer">
+            <img class="ytThumb" src="https://i.ytimg.com/vi/tpuv3hmZqqU/hqdefault.jpg" alt="Practice positioning fingers">
+            <div class="ytShade"></div>
+            <div class="ytTitle">Practice positioning fingers</div>
+            <div class="ytOpenBtn">▶ OPEN ON YOUTUBE</div>
+          </a>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="card">
+        <h2>Practice defence and diving</h2>
+        <div class="ytCard">
+          <a class="ytLink" href="https://www.youtube.com/watch?v=wSxTAQuQjKk" target="_blank" rel="noopener noreferrer">
+            <img class="ytThumb" src="https://i.ytimg.com/vi/wSxTAQuQjKk/hqdefault.jpg" alt="Practice defence and diving">
+            <div class="ytShade"></div>
+            <div class="ytTitle">Practice defence and diving</div>
+            <div class="ytOpenBtn">▶ OPEN ON YOUTUBE</div>
+          </a>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="card">
+        <h2>Practice spiking</h2>
+        <div class="ytCard">
+          <a class="ytLink" href="https://www.youtube.com/watch?v=TYlr1S_0t5s" target="_blank" rel="noopener noreferrer">
+            <img class="ytThumb" src="https://i.ytimg.com/vi/TYlr1S_0t5s/hqdefault.jpg" alt="Practice spiking">
+            <div class="ytShade"></div>
+            <div class="ytTitle">Practice spiking</div>
+            <div class="ytOpenBtn">▶ OPEN ON YOUTUBE</div>
+          </a>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="card">
+        <h2>Champs</h2>
+        <div class="ytCard">
+          <a class="ytLink" href="https://www.youtube.com/watch?v=Eez3gfMP0LU" target="_blank" rel="noopener noreferrer">
+            <img class="ytThumb" src="https://i.ytimg.com/vi/Eez3gfMP0LU/hqdefault.jpg" alt="Champs">
+            <div class="ytShade"></div>
+            <div class="ytTitle">Champs</div>
+            <div class="ytOpenBtn">▶ OPEN ON YOUTUBE</div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- keep if you want; if it affects layout, comment it out -->
+  <script src="common.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Who can play volleyball</title>
+
+<style>
+  html,body{
+    margin:0;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  }
+
+  .stage{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+  }
+
+  /* Background (same as history) */
+  .bg{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    transform:scale(1.02);
+    transition:filter 1.2s ease, opacity 1.2s ease;
+    user-select:none; pointer-events:none;
+    opacity:1;
+    z-index:1;
+  }
+  .veil{
+    position:absolute; inset:0;
+    background:radial-gradient(circle at 50% 35%, rgba(0,0,0,.00), rgba(0,0,0,.22));
+    opacity:0;
+    transition:opacity 1.2s ease;
+    pointer-events:none;
+    z-index:2;
+  }
+
+  /* Title (same style as history) */
+  .titleWrap{
+    position:fixed;
+    top:18px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:2147483000;
+    width:min(1100px, 94vw);
+    display:flex;
+    justify-content:center;
+    pointer-events:none;
+  }
+  .title{
+    margin:0;
+    padding:10px 18px;
+    border-radius:999px;
+    background:rgba(0,0,0,.22);
+    border:1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(10px);
+    box-shadow:0 18px 46px rgba(0,0,0,.25);
+    font-family: "Segoe Script","Comic Sans MS","Brush Script MT","Trebuchet MS",system-ui,sans-serif;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    font-size:clamp(18px, 2.5vw, 34px);
+  }
+  .title span{
+    background: linear-gradient(90deg, #ffe600 0%, #ff7a00 35%, #ff2bd6 70%, #7cffef 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:
+      0 0 10px rgba(255,230,0,.35),
+      0 0 18px rgba(255,50,214,.25),
+      0 10px 30px rgba(0,0,0,.35);
+  }
+  .caret{
+    display:inline-block;
+    width:10px;
+    margin-left:6px;
+    border-right:3px solid rgba(255,230,0,.85);
+    transform: translateY(2px);
+    animation: blink 800ms steps(1) infinite;
+  }
+  @keyframes blink{ 50%{opacity:0;} }
+
+  /* Reveal */
+  .stage.reveal .bg{
+    filter: blur(2px) saturate(.92) contrast(.98);
+    opacity:.78;
+  }
+  .stage.reveal .veil{ opacity:1; }
+
+  /* Scene layout */
+  .scene{
+    position:absolute;
+    inset:0;
+    z-index:5;
+    padding:110px 4vw 28px 4vw;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  /* Center “script” card */
+  .centerCard{
+    position:relative;
+    width:min(820px, 92vw);
+    max-height:none;
+    padding:16px 16px 14px 16px;
+    border-radius:22px;
+    overflow:visible;
+    background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
+    border:1px solid rgba(255,255,255,.18);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 18px 54px rgba(0,0,0,.32);
+    opacity:0;
+    transform: translateY(18px) scale(.98);
+    transition: opacity 700ms ease, transform 700ms cubic-bezier(.2,.9,.2,1);
+
+    /* IMPORTANT: keep text BELOW photos */
+    z-index:40;
+  }
+  .centerCard.show{
+    opacity:1;
+    transform: translateY(0) scale(1);
+  }
+  .centerCard::before{
+    content:"";
+    position:absolute; inset:-2px;
+    border-radius:24px;
+    background: conic-gradient(from 180deg,
+      rgba(255,210,0,.85),
+      rgba(0,190,255,.80),
+      rgba(255,60,210,.70),
+      rgba(255,210,0,.85)
+    );
+    filter: blur(16px);
+    opacity:.35;
+    z-index:0;
+  }
+  .centerInner{
+    position:relative;
+    z-index:1;
+  }
+
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    width:fit-content;
+    padding:6px 12px;
+    border-radius:999px;
+    background:linear-gradient(90deg,#ffe600,#ff7a00,#ff2bd6,#7cffef);
+    color:#2a0b3f;
+    text-shadow:0 0 6px rgba(255,255,255,.35);
+    font-weight:900;
+    font-size:12.5px;
+    letter-spacing:.35px;
+    box-shadow:0 0 14px rgba(255,122,0,.45);
+    margin-bottom:10px;
+  }
+
+  .text{
+    color:#1b1033;
+    font-weight:850;
+    font-size:14px;
+    line-height:1.55;
+    text-shadow: 0 1px 0 rgba(255,255,255,.22);
+  }
+  .text ol{ margin:0; padding-left:20px; }
+  .text li{ margin:8px 0; }
+  .text ul{ margin:8px 0 0 0; padding-left:18px; }
+  .text .subTitle{ font-weight:950; }
+
+  /* Photos around the center */
+  .photo{
+    position:absolute;
+    width:clamp(120px, 15vw, 220px);
+    aspect-ratio: 4 / 3;
+    border-radius:18px;
+    overflow:hidden;
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.18);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 18px 40px rgba(0,0,0,.30);
+    opacity:0;
+    transform: translateY(18px) scale(.96) rotate(0deg);
+    transition: opacity 700ms ease, transform 800ms cubic-bezier(.2,.9,.2,1);
+
+    /* IMPORTANT: photos ABOVE the text card */
+    z-index:80;
+
+    --rot: 0deg;
+    --delay: 0s;
+  }
+  .photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    filter:saturate(1.15) contrast(1.05) brightness(1.03);
+  }
+
+  /* Floating effect */
+  @keyframes floatSlow{
+    0%   { transform: translateY(0)    scale(1)    rotate(var(--rot)); }
+    50%  { transform: translateY(-10px) scale(1.01) rotate(var(--rot)); }
+    100% { transform: translateY(0)    scale(1)    rotate(var(--rot)); }
+  }
+  .photo.show{
+    opacity:1;
+    transform: translateY(0) scale(1) rotate(var(--rot));
+    animation: floatSlow 6.5s ease-in-out infinite;
+    animation-delay: var(--delay);
+  }
+
+  /* -------------------------------------------------
+     PHOTO POSITIONS (edit left/top here anytime)
+     Tip: move away from the center card so they don't cover text.
+     ------------------------------------------------- */
+  .p1{ left:5vw;   top:6vh;  --rot:-4deg; --delay: .0s; }  /* africa */
+  .p2{ left:7vw;   top:54vh;  --rot: 3deg; --delay: .7s; }  /* snow */
+  .p3{ left:5vw;  top:30vh;  --rot: 2deg; --delay: .3s; }  /* beach */
+  .p4{ left:70vw;  top:4vh;  --rot: 4deg; --delay: .5s; }  /* Olympic */
+  .p5{ left:80vw;  top:54vh;  --rot:-3deg; --delay: .9s; }  /* EIS1 */
+  .p6{ left:80vw;  top:77vh;  --rot: 2deg; --delay: .2s; }  /* Disabilities */
+  .p7{ left:80vw;  top:30vh;  --rot:-2deg; --delay: .6s; }  /* Lady-Volleyball */
+  .p8{ left:7vw;  top:77vh;  --rot:-2deg; --delay: 1.1s; } /* EIS2 (2) */
+
+  /* Jumping character (coverpage-like) */
+  .jumperFly{
+    position:fixed;
+    left:0; top:0;
+    width:clamp(44px, 4vw, 74px);
+    aspect-ratio: 1 / 1;
+    transform: translate(-9999px,-9999px);
+    z-index:2147482500;
+    pointer-events:none;
+    filter: drop-shadow(0 16px 14px rgba(0,0,0,.38));
+    opacity:0;
+  }
+  .jumperFly.show{ opacity:1; }
+  .jumperFly img{
+    width:100%;
+    height:100%;
+    display:block;
+    user-select:none;
+    -webkit-user-drag:none;
+    transform: rotate(90deg);
+    transform-origin: 50% 50%;
+  }
+
+  
+
+  /* ===== Jumper trail (Schweif) ===== */
+  .trailLayer{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:2147482450; /* just below the jumper */
+  }
+  .trailDot{
+    position:absolute;
+    width:12px;
+    height:12px;
+    border-radius:999px;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.95), rgba(255,230,0,.85) 40%, rgba(255,80,200,.55) 75%, rgba(0,0,0,0) 100%);
+    filter: blur(.1px) drop-shadow(0 6px 10px rgba(0,0,0,.25));
+    transform: translate(-50%,-50%) scale(1);
+    animation: trailFade 550ms ease-out forwards;
+    opacity:.95;
+  }
+  @keyframes trailFade{
+    to{ opacity:0; transform: translate(-50%,-50%) scale(1.9); }
+  }
+.backBtn{
+    position:fixed;
+    right:20px;
+    top:20px;
+    z-index:10000;
+    padding:10px 15px;
+    background:#ffcc00;
+    color:#000;
+    font-weight:bold;
+    text-decoration:none;
+    border-radius:6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  @media (max-width: 980px){
+    body{ overflow:auto; }
+    .stage{ height:auto; min-height:100vh; overflow:visible; }
+    .scene{
+      position:relative;
+      padding:110px 4vw 28px 4vw;
+      min-height: 900px;
+    }
+    .photo{
+      position:relative;
+      left:auto; top:auto;
+      width:min(92vw, 520px);
+      aspect-ratio: 16 / 9;
+      margin:12px auto;
+      display:block;
+      transform: translateY(18px) scale(.98);
+      --rot: 0deg;
+    }
+    .photo.show{
+      transform: translateY(0) scale(1) rotate(0deg);
+      animation: floatSlow 7.5s ease-in-out infinite;
+    }
+    .centerCard{ max-height:none; }
+    .jumperFly{ width:clamp(40px, 7vw, 60px); }
+  }
+</style>
+</head>
+
+<body>
+<div class="stage" id="stage">
+  <img class="bg" id="bgImg" src="history-bg.png" alt="bg">
+  <div class="veil"></div>
+
+  <div class="titleWrap">
+    <div class="title">
+      <span id="titleText"></span><span class="caret" id="caret"></span>
+    </div>
+  </div>
+
+  <!-- Jumping character -->
+  <div class="jumperFly" id="jumperFly">
+    <img id="jumperFlyImg" src="jumper.png" alt="jumper">
+  </div>
+
+  <div class="trailLayer" id="trailLayer"></div>
+
+  <div class="scene">
+    <!-- photos -->
+    <div class="photo p1" id="ph1"><img id="img1" alt="africa"></div>
+    <div class="photo p3" id="ph2"><img id="img2" alt="beach"></div>
+    <div class="photo p6" id="ph3"><img id="img3" alt="disabilities"></div>
+    <div class="photo p5" id="ph4"><img id="img4" alt="EIS1"></div>
+    <div class="photo p8" id="ph5"><img id="img5" alt="EIS2 (2)"></div>
+    <div class="photo p7" id="ph6"><img id="img6" alt="Lady Volleyball 1900"></div>
+    <div class="photo p4" id="ph7"><img id="img7" alt="Olympic"></div>
+    <div class="photo p2" id="ph8"><img id="img8" alt="snow volleyball"></div>
+
+    <!-- center text -->
+    <section class="centerCard" id="centerCard">
+      <div class="centerInner">
+        <div class="badge">Who can play volleyball? 🏐</div>
+        <div class="text">
+          <ol>
+            <li><span class="subTitle">Everybody</span> can play Volleyball: boys, girls, mixed, amateurs, young, old, professionals, para-athletes.</li>
+            <li>Volleyball can be played <span class="subTitle">anywhere</span>: indoor, school- and university gyms, grass, sand/beach, even on snow (although a bit slippery).</li>
+            <li>Volleyball is a <span class="subTitle">no contact sport</span> → lower risk of accidents and injuries.</li>
+            <li>Not so much running → also people with <span class="subTitle">less endurance</span> can play competitive.</li>
+            <li><span class="subTitle">Health benefits</span>:
+              <ul>
+                <li>Better coordination and balance</li>
+                <li>Stress relief</li>
+                <li>Flexibility and agility</li>
+                <li>Improvement muscle strength</li>
+                <li>Psychological benefits – socialization and team spirit</li>
+                <li>Improved cardio health</li>
+              </ul>
+            </li>
+            <li><span class="subTitle">Teams anywhere</span>: school, university, army, companies, holiday locations, sport-clubs.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<a class="backBtn" href="index.html">← Back to coverpage</a>
+
+<script>
+  const stage     = document.getElementById("stage");
+  const titleText = document.getElementById("titleText");
+  const caret     = document.getElementById("caret");
+
+  const TITLE = "WHO CAN PLAY VOLLEYBALL";
+  const TYPE_SPEED_MS = 38;
+
+  const SHOW_BG_ONLY_MS  = 650;
+  const REVEAL_MS        = 1550;
+  const ELEMENT_START_MS = 2400;
+  const ELEMENT_GAP_MS   = 420;
+
+  function typeTitle(){
+    let i=0;
+    (function tick(){
+      titleText.textContent = TITLE.slice(0,i++);
+      if(i <= TITLE.length) setTimeout(tick, TYPE_SPEED_MS);
+      else caret.style.display = "none";
+    })();
+  }
+
+  function attachFallback(imgEl, candidates){
+    let i = 0;
+    imgEl.addEventListener("error", ()=>{
+      i++;
+      if(i < candidates.length) imgEl.src = candidates[i];
+    });
+    if (candidates[0] !== imgEl.getAttribute("src")) imgEl.src = candidates[0];
+  }
+
+  function showElements(){
+    const ids = ["centerCard","ph1","ph2","ph3","ph4","ph5","ph6","ph7","ph8"];
+    ids.forEach((id, idx)=>{
+      setTimeout(()=>document.getElementById(id).classList.add("show"),
+                 ELEMENT_START_MS + idx*ELEMENT_GAP_MS);
+    });
+  }
+
+  /* Jumping character logic */
+  const jumperEl = document.getElementById("jumperFly");
+  
+
+  // ===== Schweif / trail =====
+  const trailLayer = document.getElementById("trailLayer");
+  function spawnTrailDot(x, y){
+    const d = document.createElement("div");
+    d.className = "trailDot";
+    d.style.left = x + "px";
+    d.style.top  = y + "px";
+    trailLayer.appendChild(d);
+    d.addEventListener("animationend", ()=> d.remove());
+  }
+
+  function getJumperXY(){
+    const t = getComputedStyle(jumperEl).transform;
+    if(!t || t === "none") return null;
+    // DOMMatrix works with matrix(...) and matrix3d(...)
+    const m = new DOMMatrixReadOnly(t);
+    return { x: m.m41, y: m.m42 };
+  }
+
+  function runTrailWhile(anim){
+    let last = 0;
+    function tick(ts){
+      if(anim.playState === "finished") return;
+      if(ts - last > 55){ // ~18 fps
+        last = ts;
+        const pos = getJumperXY();
+        if(pos){
+          // dot slightly behind the jumper center
+          spawnTrailDot(pos.x - 8, pos.y + 8);
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+const photos = ["ph1","ph2","ph3","ph4","ph5","ph6","ph7","ph8"].map(id => document.getElementById(id));
+  const centerCard = document.getElementById("centerCard");
+
+  function centerOf(el){
+    const r = el.getBoundingClientRect();
+    return { x: r.left + r.width/2, y: r.top + r.height/2, w:r.width, h:r.height };
+  }
+  function rand(min, max){ return min + Math.random()*(max-min); }
+
+  async function hop(fromEl, toEl){
+    const from = centerOf(fromEl);
+    const to   = centerOf(toEl);
+    const mid  = centerOf(centerCard);
+
+    const midX = mid.x + rand(-20, 20);
+    const midY = mid.y + rand(-20, 20);
+    const arc = Math.max(70, Math.min(140, window.innerHeight * 0.16));
+    const duration = 1750;
+    const easing = "cubic-bezier(.2,.9,.2,1)";
+
+    const kf = [
+      { transform: `translate(${from.x}px, ${from.y}px) scale(1)` },
+      { offset: 0.22, transform: `translate(${from.x}px, ${from.y-18}px) scale(1.05)` },
+      { offset: 0.50, transform: `translate(${midX}px, ${midY-arc}px) scale(1.10)` },
+      { offset: 0.62, transform: `translate(${midX}px, ${midY-arc+18}px) scale(1.06)` },
+      { offset: 0.86, transform: `translate(${to.x}px, ${to.y-14}px) scale(1.02)` },
+      { transform: `translate(${to.x}px, ${to.y}px) scale(1)` }
+    ];
+
+    jumperEl.classList.add("show");
+    const anim = jumperEl.animate(kf, { duration, easing, fill: "forwards" });
+    
+    runTrailWhile(anim);
+await anim.finished;
+    await new Promise(r => setTimeout(r, 260));
+  }
+
+  async function startJumperLoop(){
+    await new Promise(r => setTimeout(r, ELEMENT_START_MS + 8*ELEMENT_GAP_MS + 400));
+
+    let idx = 0;
+    const p0 = centerOf(photos[idx]);
+    jumperEl.style.transform = `translate(${p0.x}px, ${p0.y}px)`;
+
+    while(true){
+      const from = photos[idx];
+      const to = photos[(idx+1) % photos.length];
+      await hop(from, to);
+      idx = (idx+1) % photos.length;
+
+      if(Math.random() < 0.18){
+        photos.reverse();
+        idx = photos.findIndex(el => el === to);
+      }
+    }
+  }
+
+  let resizeTimer = null;
+  window.addEventListener("resize", ()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(()=>{
+      const r = centerOf(photos[0]);
+      jumperEl.getAnimations().forEach(a => a.cancel());
+      jumperEl.style.transform = `translate(${r.x}px, ${r.y}px)`;
+    }, 180);
+  });
+
+  window.addEventListener("load", ()=>{
+    attachFallback(document.getElementById("bgImg"), [
+      "history-bg.png",
+      "assets/images/history-bg.png"
+    ]);
+
+    // Images (exclude coverpage.png, EIS2.png, EIS3.png)
+    attachFallback(document.getElementById("img1"), ["africa.png", "assets/images/africa.png"]);
+    attachFallback(document.getElementById("img2"), ["beach.png", "assets/images/beach.png"]);
+    attachFallback(document.getElementById("img3"), ["Disabilities.png", "assets/images/Disabilities.png"]);
+    attachFallback(document.getElementById("img4"), ["EIS1.jpeg", "assets/images/EIS1.jpeg"]);
+    attachFallback(document.getElementById("img5"), ["EIS2 (2).png", "assets/images/EIS2 (2).png"]);
+    attachFallback(document.getElementById("img6"), ["Lady-Volleyball1900.png", "assets/images/Lady-Volleyball1900.png"]);
+    attachFallback(document.getElementById("img7"), ["Olympic.jpeg", "assets/images/Olympic.jpeg"]);
+    attachFallback(document.getElementById("img8"), ["snow-volleyball.jpg", "assets/images/snow-volleyball.jpg"]);
+
+    setTimeout(typeTitle, SHOW_BG_ONLY_MS);
+    setTimeout(()=>stage.classList.add("reveal"), REVEAL_MS);
+    showElements();
+    startJumperLoop();
+  });
+</script>
+</body>
+</html>

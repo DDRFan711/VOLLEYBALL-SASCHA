@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Continental Club Champions Leagues</title>
+
+<style>
+  *{box-sizing:border-box}
+
+  html,body{
+    margin:0;
+    padding:0;
+    height:100%;
+    font-family:"Segoe UI", Arial, sans-serif;
+    color:#fff;
+    overflow:hidden; /* desktop: no scroll */
+  }
+
+  /* Background (same as history) */
+  body{
+    background:
+      linear-gradient(rgba(6,10,18,.40), rgba(6,10,18,.22)),
+      url("assets/images/history-bg.png") center/cover no-repeat fixed;
+  }
+
+  /* Dim overlay: starts OFF (100% bg), then fades ON */
+  .dim{
+    position:fixed; inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.70));
+    opacity:0;
+    transition:opacity 900ms ease;
+    pointer-events:none;
+    z-index:0;
+  }
+  .dim.on{opacity:1;}
+
+  /* page container */
+  .page{
+    position:relative;
+    z-index:1;
+    max-width:1200px;
+    margin:0 auto;
+    padding:22px 16px 24px;
+  }
+
+  /* back button */
+  .backBtn{
+    position:fixed;
+    right:18px;
+    top:18px;
+    z-index:50;
+    padding:10px 16px;
+    border-radius:999px;
+    border:none;
+    cursor:pointer;
+    background:linear-gradient(135deg,#ffd200,#ff7a18);
+    color:#102a56;
+    font-weight:900;
+  }
+
+  /* headline (history style) */
+  .hero{margin:0 0 14px;}
+  .hero h1{
+    margin:0 0 8px;
+    font-size:clamp(34px,4.2vw,64px);
+    letter-spacing:1px;
+    background:linear-gradient(90deg,#ff4bd6,#ffd200,#6ee7ff);
+    -webkit-background-clip:text;
+    color:transparent;
+
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity 800ms ease, transform 800ms ease;
+  }
+  .hero p{
+    margin:0;
+    max-width:980px;
+    font-size:15px;
+    font-weight:750;
+    line-height:1.45;
+
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity 800ms ease, transform 800ms ease;
+  }
+  .hero.show h1,.hero.show p{opacity:1;transform:translateY(0);}
+
+  /* grid: results left / media right */
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr 380px;
+    gap:18px;
+    align-items:start;
+  }
+
+  /* result cards (compact) */
+  .card{
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(10,14,20,.28);
+    border-radius:16px;
+    overflow:hidden;
+    margin:10px 0;
+
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity 650ms ease, transform 650ms ease;
+  }
+  .card.show{opacity:1;transform:translateY(0);}
+
+  .cardHead{
+    padding:9px 12px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    background:rgba(0,0,0,.16);
+    border-bottom:1px solid rgba(255,255,255,.10);
+  }
+  .cardTitle{font-weight:950;font-size:15px;}
+  .badge{
+    font-weight:900;font-size:11px;
+    padding:6px 10px;border-radius:999px;
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(0,0,0,.12);
+    white-space:nowrap;
+  }
+  .cardBody{padding:8px 12px 10px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th,td{
+    padding:6px 8px;
+    border-bottom:1px solid rgba(255,255,255,.10);
+    vertical-align:top;
+  }
+  th{text-align:left;font-weight:950;opacity:.92;}
+  td{font-weight:750;opacity:.96;}
+  tr:last-child td{border-bottom:none;}
+
+  /* media column */
+  .mediaCol{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    padding-top:10px;
+  }
+
+  /* ✅ KEY FIX:
+     move/scale/rotate is applied to the OUTER .media
+     so the video can move UP (negative y) without being clipped.
+  */
+  .media{
+    height:160px;
+    width:100%;
+
+    overflow:visible;
+    border-radius:0;
+    background:transparent;
+
+    opacity:0;
+    --revealY:14px;
+    transform:
+      translateY(var(--revealY))
+      translate(var(--x,0px), var(--y,0px))
+      scale(var(--scale,1))
+      rotate(var(--rot,0deg));
+    transform-origin:center;
+
+    transition:opacity 650ms ease, transform 650ms ease;
+  }
+  .media.show{
+    opacity:1;
+    --revealY:0px;
+  }
+
+  /* inner clip keeps video/photo edges clean */
+  .mediaClip{
+    width:100%;
+    height:100%;
+    border-radius:14px;
+    overflow:hidden;
+    background:transparent;
+  }
+
+  .mediaInner{
+    width:100%;
+    height:100%;
+  }
+
+  /* images */
+  .media img{
+    width:100%;
+    height:100%;
+    object-fit:contain; /* like business_fivb */
+    display:block;
+    background:none;
+  }
+
+  /* ===== Video wrapper (CHANGED: no iframe) ===== */
+  .videoBox{
+    position:relative;
+    width:100%;
+    height:100%;
+    border-radius:14px;
+    overflow:hidden;
+    background:rgba(0,0,0,.18);
+  }
+  .videoBox img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    filter:brightness(.85);
+  }
+  .ytBtn{
+    position:absolute;
+    left:50%;
+    bottom:12px;
+    transform:translateX(-50%);
+    padding:10px 18px;
+    border-radius:999px;
+    border:none;
+    cursor:pointer;
+
+    font-weight:950;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+
+    background:linear-gradient(135deg,#ffd200,#ff7a18);
+    color:#102a56;
+
+    box-shadow:0 14px 30px rgba(0,0,0,.45);
+    z-index:2;
+  }
+  .ytBtn:hover{
+    transform:translateX(-50%) scale(1.05);
+  }
+
+  /* ===== YOUR LATEST POSITIONS (kept) ===== */
+  .m1{ --x: -30px;  --y: -25px; --scale: 1.12; --rot: -10deg; }
+  .m2{ --x: 110px; --y: 8px;   --scale: 1.08; --rot: 10deg; }
+  .m3{ --x: 78px;  --y: 70px;  --scale: 1.50; --rot: 0deg;  }
+
+  /* Responsive: allow scroll on small screens */
+  @media (max-width: 980px){
+    html,body{overflow:auto;}
+    .grid{grid-template-columns:1fr;}
+    .mediaCol{flex-direction:column;}
+    .media{height:200px;}
+    .m2{ --x: 0px; --y:0px; --scale:1.0; --rot:0deg; }
+  }
+
+  /* REMOVE FRAME AROUND VIDEO ONLY (kept, harmless now) */
+  .imgCard.video{
+    background:none !important;
+    backdrop-filter:none !important;
+    box-shadow:none !important;
+    border:none !important;
+    padding:0 !important;
+  }
+</style>
+</head>
+
+<body>
+  <div class="dim" id="dim"></div>
+
+  <button class="backBtn" onclick="location.href='volleyball_business.html'">⟵ Back</button>
+
+  <div class="page">
+    <div class="hero" id="hero">
+      <h1>Continental Club Champions Leagues</h1>
+      <p>These competitions are the “exposure machines”. Europe is the biggest club stage, then South America, then Asia.</p>
+    </div>
+
+    <div class="grid">
+
+      <!-- LEFT: RESULTS -->
+      <div class="results">
+        <section class="card" id="c1">
+          <div class="cardHead">
+            <div class="cardTitle">Europe (CEV) — most important</div>
+            <div class="badge">high fame &amp; income</div>
+          </div>
+          <div class="cardBody">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:110px;">Season</th>
+                  <th>Men — final</th>
+                  <th>Women — final</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>2024/25</b></td>
+                  <td>Perugia (Italy) 3–2 Zawiercie (Poland)</td>
+                  <td>Conegliano (Italy) 3–0 Scandicci (Italy)</td>
+                </tr>
+                <tr>
+                  <td><b>2023/24</b></td>
+                  <td>Trentino (Italy) 3–0 Jastrzębski (Poland)</td>
+                  <td>Conegliano (Italy) 3–2 Milano (Italy)</td>
+                </tr>
+                <tr>
+                  <td><b>2022/23</b></td>
+                  <td>ZAKSA (Poland) 3–2 Jastrzębski (Poland)</td>
+                  <td>VakıfBank (Turkey) 3–1 Eczacıbaşı (Turkey)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card" id="c2">
+          <div class="cardHead">
+            <div class="cardTitle">South America (CSV)</div>
+            <div class="badge">strong &amp; fast</div>
+          </div>
+          <div class="cardBody">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:110px;">Season</th>
+                  <th>Men — final</th>
+                  <th>Women — final</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>2025</b></td>
+                  <td>Sada Cruzeiro (Brazil) 3–1 Praia Clube (Brazil)</td>
+                  <td>Dentil Praia Clube (Brazil) 3–0 Alianza Lima (Peru)</td>
+                </tr>
+                <tr>
+                  <td><b>2024</b></td>
+                  <td>Sada Cruzeiro (Brazil) 3–0 Ciudad Vóley (Argentina)</td>
+                  <td>Gerdau Minas (Brazil) 3–1 Praia Clube (Brazil)</td>
+                </tr>
+                <tr>
+                  <td><b>2023</b></td>
+                  <td>Sada Cruzeiro (Brazil) 3–1 Itambé Minas (Brazil)</td>
+                  <td>Praia Clube (Brazil) 3–1 Alianza Lima (Peru)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card" id="c3">
+          <div class="cardHead">
+            <div class="cardTitle">Asia (AVC) — Club Championships</div>
+            <div class="badge">growing market</div>
+          </div>
+          <div class="cardBody">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:110px;">Season</th>
+                  <th>Men — final</th>
+                  <th>Women — final</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>2025</b></td>
+                  <td>Osaka Bluteon (Japan) 3–1 Foolad Sirjan (Iran)</td>
+                  <td>Zhetysu VK (Kazakhstan) 3–1 VTV Bình Điền Long An (Vietnam)</td>
+                </tr>
+                <tr>
+                  <td><b>2024</b></td>
+                  <td>Foolad Sirjan (Iran) 3–0 Shahdab Yazd (Iran)</td>
+                  <td>NEC Red Rockets (Japan) 3–1 LP Bank Ninh Binh (Vietnam)</td>
+                </tr>
+                <tr>
+                  <td><b>2023</b></td>
+                  <td>Suntory Sunbirds (Japan) 3–1 Kalleh Mazandaran (Iran)</td>
+                  <td>Sport Center 1 (Vietnam) 3–2 Diamond Food–Fine Chef SC (Thailand)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT: MEDIA (2 photos + 1 video-as-thumbnail) -->
+      <div class="mediaCol">
+        <div class="media m1" id="m1">
+          <div class="mediaClip">
+            <div class="mediaInner">
+              <img src="assets/images/FIVBman2025.jpg" alt="FIVB photo 2025">
+            </div>
+          </div>
+        </div>
+
+        <div class="media m2" id="m2">
+          <div class="mediaClip">
+            <div class="mediaInner">
+              <img src="assets/images/SAContinental2025.jpg" alt="South America Continental 2025">
+            </div>
+          </div>
+        </div>
+
+        <div class="media m3" id="m3">
+          <div class="mediaClip">
+            <div class="mediaInner">
+              <div class="videoBox">
+                <!-- thumbnail (NO YouTube player -> NO red play button) -->
+                <img src="https://img.youtube.com/vi/nLvK83P45IM/hqdefault.jpg" alt="Video preview">
+                <button class="ytBtn"
+                  onclick="window.open('https://www.youtube.com/watch?v=nLvK83P45IM','_blank')">
+                  ▶ OPEN ON YOUTUBE
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  // Animation sequence:
+  // 1) background already visible (dim off)
+  // 2) headline fades in
+  // 3) background dims
+  // 4) results + media appear one after another
+  window.addEventListener('DOMContentLoaded', () => {
+    const hero = document.getElementById('hero');
+    const dim  = document.getElementById('dim');
+
+    const sequence = [
+      document.getElementById('c1'),
+      document.getElementById('m1'),
+      document.getElementById('c2'),
+      document.getElementById('m2'),
+      document.getElementById('c3'),
+      document.getElementById('m3'),
+    ];
+
+    setTimeout(() => hero.classList.add('show'), 250);
+    setTimeout(() => dim.classList.add('on'), 1100);
+
+    const start = 1450;
+    const step  = 240;
+    sequence.forEach((el, i) => {
+      setTimeout(() => el.classList.add('show'), start + i * step);
+    });
+  });
+</script>
+
+<script src="common.js?v=1"></script>
+</body>
+</html>
+

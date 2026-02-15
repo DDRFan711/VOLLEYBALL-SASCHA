@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bibliography</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+html,body{
+  margin:0;height:100%;overflow:hidden;background:#000;
+  font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+}
+.stage{position:relative;width:100vw;height:100vh;overflow:hidden;}
+
+.bg{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;transform:scale(1.02);
+  transition:filter 1.2s ease,opacity 1.2s ease;
+  z-index:1;
+}
+.veil{
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 35%,rgba(0,0,0,.00),rgba(0,0,0,.22));
+  opacity:0;transition:opacity 1.2s ease;z-index:2;
+}
+
+/* ===== TITLE ===== */
+.titleWrap{
+  position:fixed;top:18px;left:50%;transform:translateX(-50%);
+  z-index:9999;width:94vw;display:flex;justify-content:center;
+}
+.title{
+  padding:10px 18px;
+  background:rgba(0,0,0,.18);
+  border-radius:999px;
+  backdrop-filter:blur(10px);
+  font-size:clamp(22px,2.8vw,34px);
+  font-weight:900;letter-spacing:.7px;
+  text-transform:uppercase;white-space:nowrap;
+}
+.title span{
+  background:linear-gradient(90deg,#ffe600,#ff8a00,#ff3bd6,#6cffea);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 14px rgba(255,230,0,.35);
+}
+.caret{
+  display:inline-block;width:8px;margin-left:4px;
+  border-right:3px solid rgba(255,230,0,.9);
+  animation:blink .8s steps(1) infinite;
+}
+@keyframes blink{50%{opacity:0;}}
+
+.stage.reveal .bg{filter:blur(2px) saturate(.95);opacity:.8;}
+.stage.reveal .veil{opacity:1;}
+
+/* ===== CONTENT ===== */
+.center{
+  position:absolute;inset:0;z-index:10;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:120px 22px 40px;
+}
+.listWrap{
+  width:min(1100px,94vw);
+  max-height:100%;
+  overflow-y:auto;
+  opacity:0;
+  transform:translateY(20px);
+  transition:.9s ease;
+}
+.stage.reveal .listWrap{opacity:1;transform:none;}
+
+h2{
+  color:#ffe600;
+  margin:24px 0 10px;
+  font-size:22px;
+  border-bottom:1px solid rgba(255,230,0,.25);
+  padding-bottom:4px;
+}
+
+.entry{
+  color:#ffe600;
+  font-weight:800;
+  line-height:1.35;
+  margin-bottom:10px;
+  word-break:break-word;
+}
+.entry a{color:#ffe600;text-decoration:underline;text-underline-offset:3px;}
+.entry a:hover{filter:brightness(1.15);}
+
+.backBtn{
+  position:fixed;right:20px;top:20px;
+  background:#ffcc00;color:#000;
+  padding:8px 14px;border-radius:6px;
+  text-decoration:none;font-weight:800;z-index:9999;
+}
+</style>
+</head>
+
+<body>
+<div class="stage" id="stage">
+  <img class="bg" src="history-bg.png" alt="">
+  <div class="veil"></div>
+
+  <div class="titleWrap">
+    <div class="title"><span id="titleText"></span><span class="caret" id="caret"></span></div>
+  </div>
+
+  <div class="center">
+    <div class="listWrap">
+
+      <h2>History</h2>
+      <div class="entry">INTERNATIONAL OLYMPIC COMMITTEE (2024-08-10). HISTORY OF VOLLEYBALL: FROM ORIGINS TO THE OLYMPICS.
+        <a href="https://www.olympics.com/en/news/what-history-volleyball-game-origin-mintonette-ymca-fivb-olympics" target="_blank" rel="noopener">https://www.olympics.com/en/news/what-history-volleyball-game-origin-mintonette-ymca-fivb-olympics</a>
+      </div>
+      <div class="entry">PAKMEN VOLLEYBALL (NOT AVAILABLE). THE HISTORY OF VOLLEYBALL.
+        <a href="https://www.pakmen.com/the-history-of-volleyball/" target="_blank" rel="noopener">https://www.pakmen.com/the-history-of-volleyball/</a>
+      </div>
+      <div class="entry">WORLD OF VOLLEY (2013-02-27). IN 1995 THE SPORT OF VOLLEYBALL WAS 100 YEARS OLD.
+        <a href="https://worldofvolley.com/stories/did-you-know/11764/in-1995-the-sport-of-volleyball-was-100-years-old" target="_blank" rel="noopener">https://worldofvolley.com/stories/did-you-know/11764/in-1995-the-sport-of-volleyball-was-100-years-old</a>
+      </div>
+      <div class="entry">SPORTS EVENTS MEDIA GROUP (NOT AVAILABLE). THE RISE OF VOLLEYBALL.
+        <a href="https://sportseventsmediagroup.com/the-rise-of-volleyball/html" target="_blank" rel="noopener">https://sportseventsmediagroup.com/the-rise-of-volleyball/html</a>
+      </div>
+      <div class="entry">PAPERSOWL HUB (NOT AVAILABLE). THE HISTORY OF VOLLEYBALL – FROM HUMBLE BEGINNINGS TO GLOBAL FAME.
+        <a href="https://hub.papersowl.com/examples/the-history-of-volleyball-from-humble-beginnings-to-global-fame/" target="_blank" rel="noopener">https://hub.papersowl.com/examples/the-history-of-volleyball-from-humble-beginnings-to-global-fame/</a>
+      </div>
+
+      <h2>Lessons for kids</h2>
+      <div class="entry">PAKMEN VOLLEYBALL (NOT AVAILABLE). THE HISTORY OF VOLLEYBALL.
+        <a href="https://www.pakmen.com/the-history-of-volleyball/" target="_blank" rel="noopener">https://www.pakmen.com/the-history-of-volleyball/</a>
+      </div>
+      <div class="entry">THE ART OF COACHING VOLLEYBALL (NOT AVAILABLE). 30 MINUTES OF DRILLS FOR BEGINNING VOLLEYBALL PLAYERS.
+        <a href="https://www.theartofcoachingvolleyball.com/30-minutes-of-drills-for-beginning-volleyball-players/" target="_blank" rel="noopener">https://www.theartofcoachingvolleyball.com/30-minutes-of-drills-for-beginning-volleyball-players/</a>
+      </div>
+      <div class="entry">VOLLEYBALL WORLD (NOT AVAILABLE). HOW TO SET IN VOLLEYBALL LIKE A PRO.
+        <a href="https://en.volleyballworld.com/blogs/how-to-set-in-volleyball-like-a-pro" target="_blank" rel="noopener">https://en.volleyballworld.com/blogs/how-to-set-in-volleyball-like-a-pro</a>
+      </div>
+
+      <div class="entry">GOOGLE SEARCH (NOT AVAILABLE). VOLLEYBALL DRILLS FOR 15 YEAR OLDS (SEARCH RESULTS).
+        <a href="https://www.google.com/search?q=volleyball+drills+for+15+year+olds&rlz=1C1CHBF_enVN1172VN1172&sca_esv=7dcbc37479457eb0&sxsrf=AE3TifOScTnhnphj5R02w5xlvDxQXo7VoA%3A1767376515350&ei=gwZYabGNFYvzi-gPiJOM0A8&oq=volleyball+drills+for+12+year+olds+with+drawings&gs_lp=Egxnd3Mtd2l6LXNlcnAiMHZvbGxleWJhbGwgZHJpbGxzIGZvciAxMiB5ZWFyIG9sZHMgd2l0aCBkcmF3aW5ncyoCCAMyCBAAGIAEGKIEMgUQABjvBTIIEAAYgAQYogQyCBAAGIAEGKIEMggQABiABBiiBEiXLlCjCViuDXABeAGQAQCYAYcBoAHpAqoBAzEuMrgBAcgBAPgBAZgCBKAC8wLCAgoQABiwAxjWBBhHmAMAiAYBkAYIkgcDMi4yoAekC7IHAzEuMrgH8QLCBwMwLjTIBwaACAA&sclient=gws-wiz-serp" target="_blank" rel="noopener">https://www.google.com/search?q=volleyball+drills+for+15+year+olds</a>
+      </div>
+
+      <div class="entry">PINTEREST (NOT AVAILABLE). VOLLEYBALL VIDEO PIN (REFERENCE).
+        <a href="https://www.pinterest.com/pin/yayayay-via-tt-averykohlervb-volleyballislife-volleyballplayers-beachvolleyball-beachvol-video-in-2025--11188699074455440/" target="_blank" rel="noopener">https://www.pinterest.com/pin/yayayay-via-tt-averykohlervb-volleyballislife-volleyballplayers-beachvolleyball-beachvol-video-in-2025--11188699074455440/</a>
+      </div>
+
+      <div class="entry">GOOGLE SEARCH (NOT AVAILABLE). VOLLEYBALL DRILLS FOR 14 YEARS OLD (SEARCH RESULTS).
+        <a href="https://www.google.com/search?q=volleyball+drills+for+14+yeRS+OLD&rlz=1C1CHBF_enVN1172VN1172&sca_esv=7dcbc37479457eb0&biw=1536&bih=826&sxsrf=AE3TifNZ146JWnIx_zstXxjh9NW_GIr35A%3A1767376808797&ei=qAdYaaGzMJ2hi-gPmpGD8AE&ved=0ahUKEwihp_3Wt-2RAxWd0AIHHZrIAB44ChDh1QMIEQ&uact=5&oq=volleyball+drills+for+14+yeRS+OLD&gs_lp=Egxnd3Mtd2l6LXNlcnAiIXZvbGxleWJhbGwgZHJpbGxzIGZvciAxNCB5ZVJTIE9MRDIGEAAYFhgeMgYQABgWGB4yBhAAGBYYHjIGEAAYFhgeMgYQABgWGB4yBhAAGBYYHjIGEAAYFhgeMgYQABgWGB4yCxAAGIAEGIYDGIoFMgsQABiABBiGAxiKBUiXLlDnCVjbKnABeAGQAQCYAaoBoAG2CaoBAzQuN7gBA8gBAPgBAZgCDKAC8AnCAgoQABiwAxjWBBhHwgIKECMYgAQYJxiKBcICBBAjGCfCAgoQABiABBgUGIcCwgIFEAAYgATCAgsQABiABBiRAhiKBcICBxAAGIAEGA2YAwCIBgGQBgiSBwM0LjigB69ssgcDMy44uAftCcIHBzAuNi41LjHIByqACAA&sclient=gws-wiz-serp#fpstate=ive&vld=cid:c8469154,vid:iAsH4YZKyLc,st:0" target="_blank" rel="noopener">https://www.google.com/search?q=volleyball+drills+for+14+years+old</a>
+      </div>
+
+      <div class="entry">YOUTUBE (NOT AVAILABLE). VOLLEYBALL DRILLS VIDEO.
+        <a href="https://www.youtube.com/watch?v=vbwODliHN94" target="_blank" rel="noopener">https://www.youtube.com/watch?v=vbwODliHN94</a>
+      </div>
+
+      <div class="entry">GOOGLE SEARCH (NOT AVAILABLE). VOLLEYBALL DRILLS ATHLETICS (SEARCH RESULTS).
+        <a href="https://www.google.com/search?q=volleyball+drills+ATHLETICS&rlz=1C1CHBF_enVN1172VN1172&sca_esv=7dcbc37479457eb0&biw=1536&bih=826&sxsrf=AE3TifM15jgtoIEpH1a-3nmcsW3kC_qNOA%3A1767376832870&ei=wAdYaczyNIuci-gP_d6D6As&ved=0ahUKEwjM0rrit-2RAxULzgIHHX3vAL0Q4dUDCBE&uact=5&oq=volleyball+drills+ATHLETICS&gs_lp=Egxnd3Mtd2l6LXNlcnAiG3ZvbGxleWJhbGwgZHJpbGxzIEFUSExFVElDUzIFECEYoAEyBRAhGJ8FSOslULYJWJwYcAF4AJABAJgBuQKgAcELqgEHMy41LjEuMbgBA8gBAPgBAZgCCqACqwvCAgoQABiwAxjWBBhHwgIIEAAYgAQYywHCAgsQABiABBiRAhiKBcICBRAAGIAEwgIGEAAYFhgewgILEAAYgAQYhgMYigXCAgUQABjvBZgDAOIDBRIBMSBAiAYBkAYIkgcHMy41LjEuMaAHxz6yBwcyLjUuMS4xuAepC8IHBTAuNC42yAchgAgA&sclient=gws-wiz-serp" target="_blank" rel="noopener">https://www.google.com/search?q=volleyball+drills+ATHLETICS</a>
+      </div>
+
+      <div class="entry">GOOGLE SEARCH (NOT AVAILABLE). VOLLEYBALL DRILLS ENDURANCE (SEARCH RESULTS).
+        <a href="https://www.google.com/search?num=12&sa=X&rlz=1C1CHBF_enVN1172VN1172&sca_esv=7dcbc37479457eb0&sxsrf=AE3TifMbpdkdIeGlgRIS2YQieoEYcFCRBw:1767377246743&udm=7&fbs=AIIjpHxU7SXXniUZfeShr2fp4giZ59Aj-dkSgmXWKpa2HWaBZDtyvvIn4PVHl081BMOU6ho1DagsDtH7EhU_jONOpA_vABNNGdIit_o7p84JEgPRvxGQ1EoTYoAKVfVzXKCLxL9lr69N3ZJiLMOh8gHEvgyOOmPkf3lX9xoEcgWnlBU9t4scKYX3BIS_iSKoqdS0a40EzgpG&q=volleyball+drills+ENDURANCE&ved=2ahUKEwjUtuenue2RAxVX1wIHHaD8C_wQtKgLegQIFBAB&biw=1536&bih=826&dpr=1.25#fpstate=ive&vld=cid:dad49e23,vid:Gxchxp4v_2c,st:0&vld=cid:5e9b5d1c,vid:XLcd5kynuFI,st:0" target="_blank" rel="noopener">https://www.google.com/search?q=volleyball+drills+ENDURANCE</a>
+      </div>
+
+      <div class="entry">YOUTUBE (NOT AVAILABLE). AT HOME VOLLEYBALL TRAINING.
+        <a href="https://www.youtube.com/watch?v=Foj6A4WWgCg&t=199s" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Foj6A4WWgCg&t=199s</a>
+      </div>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). INCREASE ARM SPEED.
+        <a href="https://www.youtube.com/watch?v=YDqRvb6b3fo" target="_blank" rel="noopener">https://www.youtube.com/watch?v=YDqRvb6b3fo</a>
+      </div>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). JUMP TRAINING.
+        <a href="https://www.youtube.com/watch?v=CNS7s0R_htI" target="_blank" rel="noopener">https://www.youtube.com/watch?v=CNS7s0R_htI</a>
+      </div>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). JUMP TRAINING.
+        <a href="https://www.youtube.com/watch?v=3Sii41htMLk" target="_blank" rel="noopener">https://www.youtube.com/watch?v=3Sii41htMLk</a>
+      </div>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). JUMP TRAINING.
+        <a href="https://www.youtube.com/watch?v=QRN1Yzo0hjU" target="_blank" rel="noopener">https://www.youtube.com/watch?v=QRN1Yzo0hjU</a>
+      </div>
+
+      <div class="entry">YOUTUBE (NOT AVAILABLE). TRAINING VIDEO (SEHR GUT).
+        <a href="https://www.youtube.com/watch?v=wSxTAQuQjKk" target="_blank" rel="noopener">https://www.youtube.com/watch?v=wSxTAQuQjKk</a>
+      </div>
+
+      <div class="entry">YOUTUBE (NOT AVAILABLE). PASSING (GUT).
+        <a href="https://www.youtube.com/watch?v=7eKjxstiYpU" target="_blank" rel="noopener">https://www.youtube.com/watch?v=7eKjxstiYpU</a>
+      </div>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). SETTER.
+        <a href="https://www.youtube.com/watch?v=K9X_wB1Yu84" target="_blank" rel="noopener">https://www.youtube.com/watch?v=K9X_wB1Yu84</a>
+      </div>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). FINGERS / SETTING.
+        <a href="https://www.youtube.com/watch?v=tpuv3hmZqqU" target="_blank" rel="noopener">https://www.youtube.com/watch?v=tpuv3hmZqqU</a>
+      </div>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). SPIKE MISTAKES AND CORRECTION.
+        <a href="https://www.youtube.com/watch?v=TYlr1S_0t5s" target="_blank" rel="noopener">https://www.youtube.com/watch?v=TYlr1S_0t5s</a>
+      </div>
+
+      <h2>Rules Volleyball</h2>
+      <div class="entry">NCVA (NOT AVAILABLE). HISTORY OF VOLLEYBALL (GENERAL INFO).
+        <a href="https://ncva.com/info/general-info/history-of-volleyball/" target="_blank" rel="noopener">https://ncva.com/info/general-info/history-of-volleyball/</a>
+      </div>
+      <div class="entry">CATHERES07 (NOT AVAILABLE). FACILITIES (REFERENCE PAGE).
+        <a href="https://catheres07.tripod.com/facilities.html" target="_blank" rel="noopener">https://catheres07.tripod.com/facilities.html</a>
+      </div>
+
+      <h2>Practicing</h2>
+      <div class="entry">BEACH-VOLLEYBALL.DE (NOT AVAILABLE). HARD ATTACK, SHOT, POKE.
+        <a href="https://www.beach-volleyball.de/beach-camps/trainingstipps/angriff/harter-schlag-shot-poke" target="_blank" rel="noopener">https://www.beach-volleyball.de/beach-camps/trainingstipps/angriff/harter-schlag-shot-poke</a>
+      </div>
+      <div class="entry">FRANZISKA MOOG (2013-06-17). VERSCHIEDENE BALLTECHNIKEN.
+        <a href="https://franziskamoog.wordpress.com/2013/06/17/verschiedene-balltechniken/" target="_blank" rel="noopener">https://franziskamoog.wordpress.com/2013/06/17/verschiedene-balltechniken/</a>
+      </div>
+      <div class="entry">FREEPIK (NOT AVAILABLE). SMASH VOLLEYBALL CARTOON CHARACTERS.
+        <a href="https://www.freepik.com/premium-vector/smash-volleyball-cartoon-characters_8797354.htm" target="_blank" rel="noopener">https://www.freepik.com/premium-vector/smash-volleyball-cartoon-characters_8797354.htm</a>
+      </div>
+
+      <h2>Create webpage</h2>
+      <div class="entry">WORDPRESS (NOT AVAILABLE). SETUP / ONBOARDING DOMAINS.
+        <a href="https://wordpress.com/setup/onboarding/domains?ref=marketing_bar&start_ref=https%3A%2F%2Ffranziskamoog.wordpress.com%2F" target="_blank" rel="noopener">https://wordpress.com/setup/onboarding/domains?ref=marketing_bar&start_ref=https%3A%2F%2Ffranziskamoog.wordpress.com%2F</a>
+      </div>
+
+      <h2>Videos</h2>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). VOLLEYBALL VIDEO.
+        <a href="https://www.youtube.com/watch?v=Ai98LsK6Wgk" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Ai98LsK6Wgk</a>
+      </div>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). OLYMPICS 2020 VOLLEYBALL FINAL WOMEN (SEARCH RESULTS).
+        <a href="https://www.youtube.com/results?search_query=Olympics+2020+volleyball+final+woman" target="_blank" rel="noopener">https://www.youtube.com/results?search_query=Olympics+2020+volleyball+final+woman</a>
+      </div>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). FIVB CHAMPIONSHIPS 2022 MEN FINAL (SEARCH RESULTS).
+        <a href="https://www.youtube.com/results?search_query=Fivb+championships+2022+man+final" target="_blank" rel="noopener">https://www.youtube.com/results?search_query=Fivb+championships+2022+man+final</a>
+      </div>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). VOLLEYBALL NATIONS LEAGUE 2022 MEN FINAL (SEARCH RESULTS).
+        <a href="https://www.youtube.com/results?search_query=volleyball+nationsleague+2022+men+final" target="_blank" rel="noopener">https://www.youtube.com/results?search_query=volleyball+nationsleague+2022+men+final</a>
+      </div>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). VOLLEYBALL VIDEO.
+        <a href="https://www.youtube.com/watch?v=qGWIM0QWapQ" target="_blank" rel="noopener">https://www.youtube.com/watch?v=qGWIM0QWapQ</a>
+      </div>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). FIVB WOMEN 2018 FINAL (SEARCH RESULTS).
+        <a href="https://www.youtube.com/results?search_query=fivb+champiion+ship+woman+2018+final" target="_blank" rel="noopener">https://www.youtube.com/results?search_query=fivb+champiion+ship+woman+2018+final</a>
+      </div>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). VOLLEYBALL WORLD CHAMPIONSHIP 2018 WOMEN’S FINAL (SEARCH RESULTS).
+        <a href="https://www.youtube.com/results?search_query=volleyball+world+championship+2018+women%27s+final" target="_blank" rel="noopener">https://www.youtube.com/results?search_query=volleyball+world+championship+2018+women%27s+final</a>
+      </div>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). VOLLEYBALL NATIONS LEAGUE 2018 MEN FINAL (SEARCH RESULTS).
+        <a href="https://www.youtube.com/results?search_query=volleyball+nationsleagea+2018+men+final" target="_blank" rel="noopener">https://www.youtube.com/results?search_query=volleyball+nationsleagea+2018+men+final</a>
+      </div>
+
+      <h2>Health and injuries</h2>
+      <div class="entry">BOSTON CHILDREN’S HOSPITAL (NOT AVAILABLE). VOLLEYBALL INJURY PREVENTION.
+        <a href="https://www.childrenshospital.org/sports-injury-prevention/volleyball" target="_blank" rel="noopener">https://www.childrenshospital.org/sports-injury-prevention/volleyball</a>
+      </div>
+      <div class="entry">GOOGLE SEARCH (NOT AVAILABLE). VOLLEYBALL ACCIDENT RISK STATISTICS COMPARISON (SEARCH RESULTS).
+        <a href="https://www.google.com/search?q=Volleyball+and+accident+risk+statistics+in+comparision+with+other+sports&sca_esv=18a6e92da9c605eb&rlz=1C1CHBF_enVN1172VN1172&sxsrf=AE3TifMfb4gKVFqDYi7tfjStIaBmF6dYtQ%3A1767003544554&ei=mFVSabnNIemBi-gPv8aK0Ak&ved=0ahUKEwi5-duUyeKRAxXpwAIHHT-jApoQ4dUDCBE&uact=5&oq=Volleyball+and+accident+risk+statistics+in+comparision+with+other+sports&gs_lp=Egxnd3Mtd2l6LXNlcnAiSFZvbGxleWJhbGwgYW5kIGFjY2lkZW50IHJpc2sgc3RhdGlzdGljcyBpbiBjb21wYXJpc2lvbiB3aXRoIG90aGVyIHNwb3J0c0izYFCKCVj2W3ABeAGQAQCYAc4CoAG6KKoBCTE2LjI3LjEuMbgBA8gBAPgBAZgCIaACvB3CAgoQABiwAxjWBBhHwgIHECMYsAIYJ8ICCBAAGIAEGKIEwgIFEAAY7wXCAgUQIRigAcICBBAjGCfCAgQQIRgVwgIFECEYnwXCAgcQIRigARgKwgIGECEYFRgKmAMA4gMFEgExIECIBgGQBgiSBwY4LjI0LjGgB8DYAbIHBjcuMjQuMbgHuh3CBwgxMC4xMy4xMMgHP4AIAA&sclient=gws-wiz-serp" target="_blank" rel="noopener">https://www.google.com/search?q=Volleyball+and+accident+risk+statistics+in+comparision+with+other+sports</a>
+      </div>
+      <div class="entry">VALLEY ATHLETICS (NOT AVAILABLE). BENEFITS OF PLAYING VOLLEYBALL.
+        <a href="https://valleyathletics.co/blog/benefits-of-playing-volleyball/" target="_blank" rel="noopener">https://valleyathletics.co/blog/benefits-of-playing-volleyball/</a>
+      </div>
+      <div class="entry">VOLLEYBALL ACADEMY (NOT AVAILABLE). TOP 10 HEALTH BENEFITS OF VOLLEYBALL.
+        <a href="https://volleyballacademy.ae/top-10-health-benefits-of-volleyball/" target="_blank" rel="noopener">https://volleyballacademy.ae/top-10-health-benefits-of-volleyball/</a>
+      </div>
+
+      <h2>Beach Volleyball</h2>
+      <div class="entry">US SPORTS CAMPS (NOT AVAILABLE). THE HISTORY OF BEACH VOLLEYBALL.
+        <a href="https://www.ussportscamps.com/tips/volleyball/the-history-of-beach-volleyball" target="_blank" rel="noopener">https://www.ussportscamps.com/tips/volleyball/the-history-of-beach-volleyball</a>
+      </div>
+      <div class="entry">GOOGLE SEARCH (NOT AVAILABLE). BEACH VOLLEYBALL HISTORY (SEARCH RESULTS).
+        <a href="https://www.google.com/search?q=Beachvoleyball+history&sca_esv=18a6e92da9c605eb&rlz=1C1CHBF_enVN1172VN1172&sxsrf=AE3TifNRssFWebXHDQaMH7Ysfi4pRwWcFA%3A1767003679610&ei=H1ZSaev4JOmri-gPnKqYuA8&ved=0ahUKEwirhI_VyeKRAxXp1QIHHRwVBvcQ4dUDCBE&uact=5&oq=Beachvoleyball+history&gs_lp=Egxnd3Mtd2l6LXNlcnAiFkJlYWNodm9sZXliYWxsIGhpc3RvcnkyBxAAGIAEGA0yBhAAGBYYHjIGEAAYFhgeMggQABgFGA0YHjIIEAAYBRgNGB4yCBAAGAUYDRgeMggQABgFGA0YHjIIEAAYCBgNGB4yCxAAGIAEGIYDGIoFMgsQABiABBiGAxiKBUjHVVAAWOJKcAF4AJABAJgBkwGgAdgRqgEEMTQuObgBA8gBAPgBAZgCGKACkRLCAgsQABiABBiRAhiKBcICChAAGIAEGEMYigXCAgUQLhiABMICBRAAGIAEwgIKECMY8AUYJxjJAsICDBAjGIAEGBMYJxiKBcICChAjGIAEGCcYigXCAgoQLhiABBhDGIoFwgIKEC4YgAQYFBiHAsICCBAAGIAEGMsBwgIKEAAYgAQYChjLAcICDhAuGIAEGNEDGMcBGMsBwgIUEC4YgAQYlwUY3AQY3gQY4ATYAQHCAgcQABiABBgKwgIEEAAYHsICCRAAGIAEGAoYC8ICCRAuGIAEGAoYC8ICDRAjGPAFGLACGCcYyQLCAgcQLhiABBgNwgIGEAAYDRgewgIIEAAYFhgKGB6YAwC6BgYIARABGBSSBwUxMy4xMaAH_dsBsgcFMTIuMTG4B44SwgcGMC4yMy4xyAcogAgA&sclient=gws-wiz-serp" target="_blank" rel="noopener">https://www.google.com/search?q=Beachvoleyball+history</a>
+      </div>
+
+      <h2>Beach volleyball rules</h2>
+      <div class="entry">FIVB (2025). FIVB BEACH VOLLEYBALL RULES 2025–2028 (PDF).
+        <a href="https://www.fivb.com/wp-content/uploads/2025/02/FIVB-BeachVolleyball_Rules2025_2028-EN-v01.pdf" target="_blank" rel="noopener">https://www.fivb.com/wp-content/uploads/2025/02/FIVB-BeachVolleyball_Rules2025_2028-EN-v01.pdf</a>
+      </div>
+      <div class="entry">GOOGLE SEARCH (NOT AVAILABLE). BEACH VOLLEYBALL RULES 2025 (SEARCH RESULTS).
+        <a href="https://www.google.com/search?q=beach+volleyball+rules+2025&sca_esv=18a6e92da9c605eb&rlz=1C1CHBF_enVN1172VN1172&sxsrf=AE3TifMnQl2BHMr-aHcBA42zKOrkBVMXUQ%3A1767004260786&ei=ZFhSacvUL-CRi-gPkIm1wQo&oq=Beachvoleyball+rules&gs_lp=Egxnd3Mtd2l6LXNlcnAiFEJlYWNodm9sZXliYWxsIHJ1bGVzKgIIATIHEAAYgAQYDTIHEAAYgAQYDTIHEAAYgAQYDTIHEAAYgAQYDTIHEAAYgAQYDTIHEAAYgAQYDTIHEAAYgAQYDTIHEAAYgAQYDTIHEAAYgAQYDTIHEAAYgAQYDUi8OVDiBliGIHABeACQAQCYAW6gAeoIqgEDOS40uAEByAEA-AEBmAINoALPCMICChAAGLADGNYEGEfCAg0QABiABBiwAxhDGIoFwgIHECMYsAIYJ8ICBhAAGBYYHsICCBAAGBYYChgewgIGEAAYDRgewgIIEAAYBRgNGB7CAggQABgIGA0YHsICCxAAGIAEGIYDGIoFwgIHEC4YgAQYDZgDAOIDBRIBMSBAiAYBkAYJkgcDOS40oAf3erIHAzguNLgHygjCBwYwLjEyLjHIBxaACAA&sclient=gws-wiz-serp" target="_blank" rel="noopener">https://www.google.com/search?q=beach+volleyball+rules+2025</a>
+      </div>
+
+      <h2>Stars / Rankings</h2>
+      <div class="entry">FIVB (NOT AVAILABLE). BEACH VOLLEYBALL WORLD RANKINGS – WOMEN.
+        <a href="https://www.fivb.com/beach-volleyball/rankings/ranking-women/" target="_blank" rel="noopener">https://www.fivb.com/beach-volleyball/rankings/ranking-women/</a>
+      </div>
+      <div class="entry">VOLLEYBALL WORLD (NOT AVAILABLE). BEACH VOLLEYBALL WORLD RANKING – MEN.
+        <a href="https://en.volleyballworld.com/beachvolleyball/world-ranking/men" target="_blank" rel="noopener">https://en.volleyballworld.com/beachvolleyball/world-ranking/men</a>
+      </div>
+      <div class="entry">ASSOCIATION OF VOLLEYBALL PROFESSIONALS – AVP (NOT AVAILABLE). PLAYERS DIRECTORY.
+        <a href="https://avp.com/players/" target="_blank" rel="noopener">https://avp.com/players/</a>
+      </div>
+      <div class="entry">BVBINFO (NOT AVAILABLE). LEADERBOARD – WOMEN.
+        <a href="http://www.bvbinfo.com/Leader.asp?Process=W&Gender=W&Category=0" target="_blank" rel="noopener">http://www.bvbinfo.com/Leader.asp?Process=W&Gender=W&Category=0</a>
+      </div>
+
+      <div class="entry">SPORTSSURGE / ALIBABA (NOT AVAILABLE). HOW MUCH DO PROFESSIONAL VOLLEYBALL PLAYERS MAKE.
+        <a href="https://sportssurge.alibaba.com/volleyball/how-much-does-professional-volleyball-players-make" target="_blank" rel="noopener">https://sportssurge.alibaba.com/volleyball/how-much-does-professional-volleyball-players-make</a>
+      </div>
+
+      <h2>Serve speed / spike speed</h2>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). TOP 20 FASTEST VOLLEYBALL SERVES THAT SHOCKED THE WORLD.
+        <a href="https://www.youtube.com/watch?v=9lxBclJIwtQ" target="_blank" rel="noopener">https://www.youtube.com/watch?v=9lxBclJIwtQ</a>
+      </div>
+      <div class="entry">YOUTUBE (NOT AVAILABLE). FAST SERVES / SERVE SPEED COMPILATION.
+        <a href="https://www.youtube.com/watch?v=Eez3gfMP0LU" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Eez3gfMP0LU</a>
+      </div>
+
+      <h2>Statistics best players</h2>
+      <div class="entry">VOLLEYBALL WORLD (NOT AVAILABLE). VNL MEN STATISTICS – BEST ATTACKERS.
+        <a href="https://en.volleyballworld.com/volleyball/competitions/volleyball-nations-league/statistics/men/best-attackers/" target="_blank" rel="noopener">https://en.volleyballworld.com/volleyball/competitions/volleyball-nations-league/statistics/men/best-attackers/</a>
+      </div>
+
+      <div class="entry">YOUTUBE (NOT AVAILABLE). EXTRA VIDEO SOURCE.
+        <a href="https://www.youtube.com/watch?v=KxllkdTTs1M" target="_blank" rel="noopener">https://www.youtube.com/watch?v=KxllkdTTs1M</a>
+      </div>
+
+    </div>
+  </div>
+
+  <a class="backBtn" href="bibliography_contact.html">← Back</a>
+</div>
+
+<script>
+const TITLE="BIBLIOGRAPHY";
+let i=0;
+const t=document.getElementById("titleText");
+(function type(){
+  t.textContent=TITLE.slice(0,i++);
+  if(i<=TITLE.length)setTimeout(type,40);
+})();
+setTimeout(()=>document.getElementById("stage").classList.add("reveal"),1100);
+</script>
+</body>
+</html>
