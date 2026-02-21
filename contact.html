@@ -38,22 +38,11 @@ html,body{
   font-weight:900;
   letter-spacing:.7px;
   text-transform:uppercase;
-  white-space:nowrap;
 }
 .title span{
   background:linear-gradient(90deg,#ffe600,#ff8a00,#ff3bd6,#6cffea);
   -webkit-background-clip:text;background-clip:text;color:transparent;
-  text-shadow:0 0 14px rgba(255,230,0,.35);
 }
-.caret{
-  display:inline-block;width:8px;margin-left:4px;
-  border-right:3px solid rgba(255,230,0,.9);
-  animation:blink .8s steps(1) infinite;
-}
-@keyframes blink{50%{opacity:0;}}
-
-.stage.reveal .bg{filter:blur(2px) saturate(.95);opacity:.8;}
-.stage.reveal .veil{opacity:1;}
 
 /* ===== FORM ===== */
 .center{
@@ -82,13 +71,8 @@ input,textarea{
   padding:16px 20px;
   font-size:18px;
   margin-bottom:18px;
-  outline:none;
 }
-textarea{border-radius:28px;min-height:160px;resize:none;}
-
-input::placeholder, textarea::placeholder{
-  color:rgba(255,230,0,.65);
-}
+textarea{border-radius:28px;min-height:160px;}
 
 .row{
   display:flex;align-items:center;gap:10px;
@@ -104,14 +88,13 @@ button{
   font-weight:900;
   font-size:16px;
   cursor:pointer;
-  box-shadow:0 10px 28px rgba(0,0,0,.35);
 }
 
 .backBtn{
   position:fixed;right:20px;top:20px;
   background:#ffcc00;color:#000;
   padding:8px 14px;border-radius:6px;
-  text-decoration:none;font-weight:800;z-index:9999;
+  text-decoration:none;font-weight:800;
 }
 </style>
 </head>
@@ -122,7 +105,7 @@ button{
   <div class="veil"></div>
 
   <div class="titleWrap">
-    <div class="title"><span id="titleText"></span><span class="caret" id="caret"></span></div>
+    <div class="title"><span>THANKS FOR VISITING VOLLEYBALL FOR FREAKS</span></div>
   </div>
 
   <div class="center">
@@ -130,17 +113,19 @@ button{
       <h1>Contact us</h1>
       <h2>We are here for you</h2>
 
-      <form>
-        <input required placeholder="Your name*">
-        <input type="email" required placeholder="Your email*">
-        <input required placeholder="Subject*">
-        <textarea required placeholder="Your message*"></textarea>
+      <!-- ✅ FORM SPREE CONNECTION -->
+      <form action="https://formspree.io/f/mreaygwb" method="POST">
+
+        <input name="name" required placeholder="Your name*">
+        <input type="email" name="email" required placeholder="Your email*">
+        <input name="subject" required placeholder="Subject*">
+        <textarea name="message" required placeholder="Your message*"></textarea>
 
         <div class="row">
-          <input type="checkbox"> I agree to the privacy policy.
+          <input type="checkbox" required> I agree to the privacy policy.
         </div>
 
-        <button>SUBMIT</button>
+        <button type="submit">SUBMIT</button>
       </form>
     </div>
   </div>
@@ -149,14 +134,7 @@ button{
 </div>
 
 <script>
-const TITLE="THANKS FOR VISITING VOLLEYBALL FOR FREAKS";
-let i=0;
-const t=document.getElementById("titleText");
-(function type(){
-  t.textContent=TITLE.slice(0,i++);
-  if(i<=TITLE.length)setTimeout(type,34);
-})();
-setTimeout(()=>document.getElementById("stage").classList.add("reveal"),1100);
+setTimeout(()=>document.getElementById("stage").classList.add("reveal"),900);
 </script>
 </body>
 </html>
