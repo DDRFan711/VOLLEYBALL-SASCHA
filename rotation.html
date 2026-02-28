@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Coming Soon</title>
+
+<style>
+  *{box-sizing:border-box}
+  html,body{
+    margin:0;height:100%;
+    overflow:hidden;
+    font-family:"Segoe UI",Arial,sans-serif;
+  }
+
+  /* FULL background like history page */
+  body{
+    background:
+      linear-gradient(rgba(0,0,0,.10),rgba(0,0,0,.20)),
+      url("assets/images/history-bg.png") center/cover no-repeat fixed;
+  }
+
+  /* Optional back button (only thing besides image+text) */
+  .backBtn{
+    position:fixed; right:18px; top:18px; z-index:10;
+    padding:10px 16px; border:none; border-radius:999px;
+    cursor:pointer; font-weight:900;
+    background:linear-gradient(135deg,#ffd200,#ff7a18);
+    color:#102a56;
+  }
+
+  /* Center content (NO box!) */
+  .center{
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:14px;
+    padding:22px 16px;
+  }
+
+  /* Big centered rabbits image */
+  .rabbits{
+    width:min(1200px, 92vw);
+    max-height:72vh;
+    object-fit:contain;
+    display:block;
+    filter: drop-shadow(0 18px 35px rgba(0,0,0,.45));
+  }
+
+  /* COMING SOON – colorful blinking letters */
+  .soon{
+    display:flex;
+    gap:2px;
+    align-items:center;
+    justify-content:center;
+    user-select:none;
+  }
+  .soon span{
+    display:inline-block;
+    font-size:64px;
+    font-weight:1000;
+    letter-spacing:2px;
+    text-transform:uppercase;
+
+    /* colorful look */
+    background:linear-gradient(90deg,#ff4bd6,#ffd200,#6ee7ff,#7cff6b);
+    -webkit-background-clip:text;
+    color:transparent;
+
+    /* blinking + color shifting */
+    animation: blink 1.1s ease-in-out infinite;
+    text-shadow:
+      0 0 10px rgba(255,255,255,.12),
+      0 0 22px rgba(255,80,210,.22),
+      0 0 28px rgba(255,210,0,.18);
+    filter:hue-rotate(0deg);
+  }
+
+  @keyframes blink{
+    0%   { opacity:.25; transform:translateY(0) scale(1);   filter:hue-rotate(0deg); }
+    50%  { opacity:1;   transform:translateY(-2px) scale(1.07); filter:hue-rotate(150deg); }
+    100% { opacity:.25; transform:translateY(0) scale(1);   filter:hue-rotate(320deg); }
+  }
+
+  /* Make it responsive on smaller screens */
+  @media(max-width:700px){
+    .soon span{font-size:42px}
+    .rabbits{max-height:62vh}
+  }
+</style>
+</head>
+
+<body>
+  <!-- If you don't want this button, delete this line -->
+  <button class="backBtn" onclick="location.href='improve.html'">⟵ Back to Improve</button>
+
+  <div class="center">
+    <!-- Your file is rabbits.png (as in your folder screenshot) -->
+    <img class="rabbits" src="assets/images/rabbits.png" alt="Rabbits">
+
+    <div class="soon" id="soon"></div>
+  </div>
+
+<script>
+  // build animated letters
+  const text = "COMING SOON";
+  const el = document.getElementById("soon");
+  el.innerHTML = text.split("").map((ch,i)=>{
+    const safe = ch === " " ? "&nbsp;" : ch;
+    return `<span style="animation-delay:${i*0.08}s">${safe}</span>`;
+  }).join("");
+</script>
+</body>
+</html>
